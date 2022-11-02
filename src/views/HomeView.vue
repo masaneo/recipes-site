@@ -1,18 +1,40 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+  <div class="container">
+    <div class="recipes">
+      <SingleRecipe
+        v-for="item in res"
+        :key="item.recipeId"
+        :recipeName="item.name"
+        :recipeId="item.recipeId"
+      />
+    </div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
+import SingleRecipe from "@/components/SingleRecipe.vue";
 
 export default {
   name: "HomeView",
   components: {
-    HelloWorld,
+    SingleRecipe,
   },
 };
 </script>
+
+<script setup>
+import { onBeforeMount, ref } from "vue";
+
+const res = ref([]);
+
+onBeforeMount(async () => {
+  res.value = await fetch(
+    "http://localhost:8000/api/recipes/getAllRecipes"
+  ).then((raw) => raw.json());
+});
+</script>
+
+<style scoped lang="scss">
+@import "@/assets/styles/home-view.sass";
+</style>
