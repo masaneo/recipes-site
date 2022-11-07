@@ -11,7 +11,7 @@ export default {
     };
   },
   mounted() {
-    this.token = localStorage.getItem("token");
+    this.token = this.$store.state.token;
   },
 };
 </script>

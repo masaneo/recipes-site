@@ -19,6 +19,9 @@
       />
     </div>
   </div>
+  <div v-if="!dataReady && isError">
+    <h1>Błąd serwera, spróbuj ponownie później</h1>
+  </div>
 </template>
 
 <script>
@@ -34,6 +37,7 @@ export default {
     return {
       recipe: Object,
       dataReady: false,
+      isError: false,
     };
   },
   async mounted() {
@@ -47,6 +51,7 @@ export default {
         console.log(res.data);
       })
       .catch((error) => {
+        this.isError = true;
         console.log(error);
       });
   },

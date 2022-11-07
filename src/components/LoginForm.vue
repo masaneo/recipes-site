@@ -45,8 +45,8 @@ export default {
             console.log(response);
             if (response.data.token) {
               this.token = response.data.token;
-              if (!localStorage.getItem("token")) {
-                localStorage.setItem("token", response.data.token);
+              if (!this.$store.state.token) {
+                this.$store.commit("setToken", response.data.token);
               }
               this.succeed = true;
               router.push("/");

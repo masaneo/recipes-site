@@ -2,33 +2,24 @@
   <nav>
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link> |
-    <span v-if="!token">
+    <span v-if="!this.$store.state.token">
       <router-link to="/login">Logowanie</router-link> |
-    </span>
-    <span v-if="!token">
       <router-link to="/register">Rejestracja</router-link>
     </span>
-    <router-link v-if="token !== ''" to="/" v-on:click="logout()"
-      >Wyloguj</router-link
-    >
+    <span v-if="this.$store.state.token !== ''">
+      <router-link to="/recipes/addRecipe">Dodaj Przepis</router-link> |
+      <router-link to="/" v-on:click="logout()">Wyloguj</router-link>
+    </span>
   </nav>
   <router-view />
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      token: String,
-    };
-  },
-  mounted() {
-    this.token = localStorage.getItem("token");
-  },
   methods: {
     logout() {
-      localStorage.removeItem("token");
-      this.token = "";
+      this.$store.state.token = "";
+      sessionStorage.clear();
     },
   },
 };
