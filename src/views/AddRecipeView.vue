@@ -1,18 +1,61 @@
 <template>
   <div>
     <input type="text" v-model="recipeName" placeholder="Nazwa przepisu" />
+    <select
+      v-for="cat in categories"
+      :key="cat.id"
+      v-model="categoryModels[cat.id].categoryId"
+      @change.once="addCategory"
+    >
+      <option value="0">Wybierz kategorię</option>
+      <option
+        v-for="category in categoryList"
+        :key="category.id"
+        :value="category.categoryId"
+      >
+        {{ category.name }}
+      </option>
+    </select>
   </div>
   <div class="ingredients">
-    <AddIngredientToRecipe
+    <div
+      class="ingredient-row"
       v-for="ingredient in ingredients"
       :key="ingredient.id"
       :id="ingredient.id"
-      :units="units"
       @change.once="addIngredient"
-      @remove="removeElement"
-    />
+    >
+      <input
+        type="text"
+        v-model="ingredientModels[ingredient.id].ingredient"
+        placeholder="Podaj składnik"
+      />
+      <input
+        type="number"
+        v-model="ingredientModels[ingredient.id].quantity"
+        placeholder="Ilość"
+      />
+      <select v-model="ingredientModels[ingredient.id].unit">
+        <option value="0">Wybierz jednostke miary</option>
+        <option v-for="unit in units" :value="unit.id" :key="unit.id">
+          {{ unit.name }}
+        </option>
+      </select>
+      <button type="submit" @click="deleteIngredientRow(ingredient.id)">
+        Usuń ten wiersz
+      </button>
+    </div>
     <div class="cookingSteps">
-      <p></p>
+      <div class="cookingStep-row" v-for="step in steps" :key="step.id">
+        <label>Krok {{ step.id + 1 }}</label>
+        <textarea
+          v-model="stepModels[step.id].step"
+          @change.once="addStep"
+        ></textarea>
+        <button type="submit" @click="deleteStepRow(step.id)">
+          Usuń ten krok
+        </button>
+      </div>
     </div>
     <button type="submit" @click="doSomething">Dodaj przepis</button>
   </div>
@@ -20,20 +63,27 @@
 
 <script>
 // @ is an alias to /src
-import AddIngredientToRecipe from "@/components/AddIngredientToRecipe.vue";
+//import AddIngredientToRecipe from "@/components/AddIngredientToRecipe.vue";
 import axios from "axios";
 import router from "@/router";
 
 export default {
   name: "AddRecipeView",
-  components: {
-    AddIngredientToRecipe,
-  },
+  components: {},
   data() {
     return {
+      recipeName: "",
       userId: Number,
       index: 1,
+      stepIndex: 1,
+      categoryIndex: 1,
       ingredients: [{ id: 0, name: "div0" }],
+      steps: [{ id: 0, name: "div0" }],
+      categories: [{ id: 0, name: "div0" }],
+      passedData: [],
+      ingredientModels: [{ ingredient: "", quantity: "", unit: "" }],
+      stepModels: [{ step: "" }],
+      categoryModels: [{ categoryId: "" }],
       categoryList: "",
       units: "",
     };
@@ -44,12 +94,55 @@ export default {
         id: this.index,
         name: "div" + this.index,
       });
+      this.ingredientModels.push({ ingredient: "", quantity: "", unit: "" });
       console.log(this.index);
       this.index++;
     },
-    removeElement(id) {
+    addStep() {
+      this.steps.push({
+        id: this.stepIndex,
+        name: "div" + this.stepIndex,
+      });
+      this.stepModels.push({
+        step: "",
+      });
+      this.stepIndex++;
+    },
+    addCategory() {
+      this.categories.push({
+        id: this.categoryIndex,
+        name: "div" + this.categoryIndex,
+      });
+      this.categoryModels.push({
+        categoryId: "",
+      });
+      this.categoryIndex++;
+    },
+    deleteIngredientRow(id) {
       const index = this.ingredients.findIndex((f) => f.id === id);
       this.ingredients.splice(index, 1);
+      this.ingredientModels[index] = { ingredient: "", quantity: "", unit: "" };
+    },
+    deleteStepRow(id) {
+      const index = this.steps.findIndex((f) => f.id === id);
+      this.steps.splice(index, 1);
+      this.stepModels[index] = { step: "" };
+    },
+    doSomething() {
+      axios
+        .post("http://localhost:8000/api/recipes/addRecipe", {
+          token: this.$store.state.token,
+          name: this.recipeName,
+          steps: this.stepModels,
+          ingredients: this.ingredientModels,
+          categories: this.categoryModels,
+        })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
   mounted() {

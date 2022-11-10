@@ -30,6 +30,15 @@ export default {
     deleteThisRow(id) {
       return this.$emit("remove", id);
     },
+    passData(msg) {
+      return {
+        id: this.id,
+        name: this.ingredient,
+        quantity: this.quantity,
+        unit: this.ingredientUnit,
+        msg: msg,
+      };
+    },
   },
 };
 </script>
