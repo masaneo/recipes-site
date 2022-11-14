@@ -1,63 +1,76 @@
 <template>
   <div>
-    <input type="text" v-model="recipeName" placeholder="Nazwa przepisu" />
-    <select
-      v-for="cat in categories"
-      :key="cat.id"
-      v-model="categoryModels[cat.id].categoryId"
-      @change.once="addCategory"
-    >
-      <option value="0">Wybierz kategorię</option>
-      <option
-        v-for="category in categoryList"
-        :key="category.id"
-        :value="category.categoryId"
+    <div v-if="stage >= 1" @change.once="stage++">
+      <input type="text" v-model="recipeName" placeholder="Nazwa przepisu" />
+      <input
+        type="file"
+        id="file"
+        class="file-input"
+        @change="getPicture(this.file)"
+        accept="image/jpeg, image/png"
+      />
+    </div>
+    <div v-if="stage >= 2" @change.once="stage++">
+      <select
+        v-for="cat in categories"
+        :key="cat.id"
+        v-model="categoryModels[cat.id].categoryId"
+        @change.once="addCategory"
       >
-        {{ category.name }}
-      </option>
-    </select>
-  </div>
-  <div class="ingredients">
-    <div
-      class="ingredient-row"
-      v-for="ingredient in ingredients"
-      :key="ingredient.id"
-      :id="ingredient.id"
-      @change.once="addIngredient"
-    >
-      <input
-        type="text"
-        v-model="ingredientModels[ingredient.id].ingredient"
-        placeholder="Podaj składnik"
-      />
-      <input
-        type="number"
-        v-model="ingredientModels[ingredient.id].quantity"
-        placeholder="Ilość"
-      />
-      <select v-model="ingredientModels[ingredient.id].unit">
-        <option value="0">Wybierz jednostke miary</option>
-        <option v-for="unit in units" :value="unit.id" :key="unit.id">
-          {{ unit.name }}
+        <option value="0">Wybierz kategorię</option>
+        <option
+          v-for="category in categoryList"
+          :key="category.id"
+          :value="category.categoryId"
+        >
+          {{ category.name }}
         </option>
       </select>
-      <button type="submit" @click="deleteIngredientRow(ingredient.id)">
-        Usuń ten wiersz
-      </button>
     </div>
-    <div class="cookingSteps">
-      <div class="cookingStep-row" v-for="step in steps" :key="step.id">
-        <label>Krok {{ step.id + 1 }}</label>
-        <textarea
-          v-model="stepModels[step.id].step"
-          @change.once="addStep"
-        ></textarea>
-        <button type="submit" @click="deleteStepRow(step.id)">
-          Usuń ten krok
+    <div class="ingredients" v-if="stage >= 3" @change.once="stage++">
+      <div
+        class="ingredient-row"
+        v-for="ingredient in ingredients"
+        :key="ingredient.id"
+        :id="ingredient.id"
+        @change.once="addIngredient"
+      >
+        <input
+          type="text"
+          v-model="ingredientModels[ingredient.id].ingredient"
+          placeholder="Podaj składnik"
+        />
+        <input
+          type="number"
+          v-model="ingredientModels[ingredient.id].quantity"
+          placeholder="Ilość"
+        />
+        <select v-model="ingredientModels[ingredient.id].unit">
+          <option value="0">Wybierz jednostke miary</option>
+          <option v-for="unit in units" :value="unit.id" :key="unit.id">
+            {{ unit.name }}
+          </option>
+        </select>
+        <button type="submit" @click="deleteIngredientRow(ingredient.id)">
+          Usuń ten wiersz
         </button>
       </div>
+      <div class="cookingSteps" v-if="stage >= 4" @change.once="stage++">
+        <div class="cookingStep-row" v-for="step in steps" :key="step.id">
+          <label>Krok {{ step.id + 1 }}</label>
+          <textarea
+            v-model="stepModels[step.id].step"
+            @change.once="addStep"
+          ></textarea>
+          <button type="submit" @click="deleteStepRow(step.id)">
+            Usuń ten krok
+          </button>
+        </div>
+      </div>
+      <button v-if="stage >= 5" type="submit" @click="sendRecipe">
+        Dodaj przepis
+      </button>
     </div>
-    <button type="submit" @click="doSomething">Dodaj przepis</button>
   </div>
 </template>
 
@@ -74,6 +87,7 @@ export default {
     return {
       recipeName: "",
       userId: Number,
+      stage: 1,
       index: 1,
       stepIndex: 1,
       categoryIndex: 1,
@@ -86,6 +100,7 @@ export default {
       categoryModels: [{ categoryId: "" }],
       categoryList: "",
       units: "",
+      image: "",
     };
   },
   methods: {
@@ -128,7 +143,16 @@ export default {
       this.steps.splice(index, 1);
       this.stepModels[index] = { step: "" };
     },
-    doSomething() {
+    getPicture() {
+      const file = document.querySelector("input[type=file]").files[0];
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        this.image = reader.result;
+      };
+      reader.readAsDataURL(file);
+    },
+    sendRecipe() {
       axios
         .post("http://localhost:8000/api/recipes/addRecipe", {
           token: this.$store.state.token,
@@ -136,6 +160,8 @@ export default {
           steps: this.stepModels,
           ingredients: this.ingredientModels,
           categories: this.categoryModels,
+          image: this.image,
+          test: "test",
         })
         .then((res) => {
           console.log(res);
@@ -154,7 +180,6 @@ export default {
     axios
       .get("http://localhost:8000/api/recipes/units/getAllUnits")
       .then((response) => {
-        console.log(response);
         if (response.data.units) {
           this.units = response.data.units;
         }
@@ -166,7 +191,6 @@ export default {
     axios
       .get("http://localhost:8000/api/recipes/categories/getAllCategories")
       .then((response) => {
-        console.log(response);
         if (response.data.categories) {
           this.categoryList = response.data.categories;
         }

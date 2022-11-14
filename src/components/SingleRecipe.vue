@@ -1,11 +1,17 @@
 <template>
   <div class="recipe" v-on:click="showRecipe()">
-    <span>{{ recipeName }}</span>
+    <div>
+      <img width="150" height="100" :src="this.image" alt="Image Not Loaded" />
+    </div>
+    <div>
+      <span>{{ recipeName }}</span>
+    </div>
   </div>
 </template>
 
 <script>
 import router from "@/router";
+import axios from "axios";
 
 export default {
   props: {
@@ -13,7 +19,23 @@ export default {
     recipeId: Number,
   },
   data() {
-    return {};
+    return {
+      image: "",
+    };
+  },
+  mounted() {
+    axios
+      .get(
+        "http://localhost:8000/api/recipes/getSingleRecipe/" +
+          this.recipeId +
+          "/getImage"
+      )
+      .then((response) => {
+        this.image = response.data.image;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
   methods: {
     showRecipe() {
