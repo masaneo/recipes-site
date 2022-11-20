@@ -4,7 +4,6 @@
     <div>{{ recipe.recipe.name }}</div>
     <div>
       <star-rating
-        v-model="rating"
         :rating="rating"
         :increment="0.5"
         :max-rating="5"
@@ -59,20 +58,25 @@ export default {
       this.giveVote();
     },
     giveVote() {
-      axios
-        .post("http://localhost:8000/api/recipes/votes/addVote", {
-          vote: this.rating,
-          token: this.$store.state.token,
-          recipeId: this.$route.params.id,
-        })
-        .then((response) => {
-          console.log(response);
-          this.succeed = true;
-        })
-        .catch((error) => {
-          console.log(error);
-          this.succeed = false;
-        });
+      if (this.$store.state.token) {
+        axios
+          .post("http://localhost:8000/api/recipes/votes/addVote", {
+            vote: this.rating,
+            token: this.$store.state.token,
+            recipeId: this.$route.params.id,
+          })
+          .then((response) => {
+            console.log(response);
+            this.succeed = true;
+          })
+          .catch((error) => {
+            console.log(error);
+            this.succeed = false;
+          });
+      } else {
+        alert("Musisz się zalogować żeby oddać głos!");
+        this.rating = 0;
+      }
     },
   },
   async mounted() {
@@ -89,14 +93,13 @@ export default {
         console.log(error);
       });
     await axios
-      .get(
-        "http://localhost:8000/api/recipes/votes/getUserVote/" +
-          this.$store.state.token +
-          "/" +
-          this.$route.params.id
-      )
+      .get("http://localhost:8000/api/recipes/votes/getUserVote", {
+        params: {
+          token: this.$store.state.token,
+          recipeId: this.$route.params.id,
+        },
+      })
       .then((res) => {
-        console.log(res);
         this.rating = res.data.vote;
       })
       .catch((error) => {
