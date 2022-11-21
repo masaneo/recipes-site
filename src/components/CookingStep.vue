@@ -1,7 +1,6 @@
 <template>
   <div class="step">
-    <span>Krok {{ stepNumber }}</span>
-    <span>{{ step }}</span>
+    <span class="step-span">{{ stepNumber + 1 + ". " + step }}</span>
   </div>
 </template>
 

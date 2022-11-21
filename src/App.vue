@@ -8,6 +8,11 @@
     </span>
     <span v-if="this.$store.state.token !== ''">
       <router-link to="/recipes/addRecipe">Dodaj Przepis</router-link> |
+      <router-link to="/recipes/myRecipes">Moje przepisy</router-link> |
+      <router-link to="/recipes/favouriteRecipes">
+        Ulubione przepisy
+      </router-link>
+      &nbsp;|
       <router-link to="/" v-on:click="logout()">Wyloguj</router-link>
     </span>
   </nav>

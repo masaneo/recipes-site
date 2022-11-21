@@ -17,7 +17,7 @@
         v-model="categoryModels[cat.id].categoryId"
         @change.once="addCategory"
       >
-        <option value="0">Wybierz kategorię</option>
+        <option value="" selected disabled hidden>Wybierz kategorię</option>
         <option
           v-for="category in categoryList"
           :key="category.id"
@@ -46,7 +46,9 @@
           placeholder="Ilość"
         />
         <select v-model="ingredientModels[ingredient.id].unit">
-          <option value="0">Wybierz jednostke miary</option>
+          <option value="" selected disabled hidden>
+            Wybierz jednostke miary
+          </option>
           <option v-for="unit in units" :value="unit.id" :key="unit.id">
             {{ unit.name }}
           </option>

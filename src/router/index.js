@@ -4,6 +4,8 @@ import RegisterView from "@/views/RegisterView";
 import LoginView from "@/views/LoginView";
 import RecipeView from "@/views/RecipeView";
 import AddRecipeView from "@/views/AddRecipeView";
+import UserRecipesView from "@/views/UserRecipesView";
+import FavouriteRecipesView from "@/views/FavouriteRecipesView";
 
 const routes = [
   {
@@ -39,6 +41,16 @@ const routes = [
     path: "/recipes/addRecipe",
     name: "AddRecipe",
     component: AddRecipeView,
+  },
+  {
+    path: "/recipes/myRecipes",
+    name: "UserRecipes",
+    component: UserRecipesView,
+  },
+  {
+    path: "/recipes/favouriteRecipes",
+    name: "FavouriteRecipes",
+    component: FavouriteRecipesView,
   },
 ];
 
