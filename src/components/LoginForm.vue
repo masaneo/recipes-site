@@ -1,25 +1,26 @@
 <template>
-  <div class="login-form">
-    <input
-      type="text"
-      name="email"
-      placeholder="Podaj email"
-      v-model="email"
-    /><br />
-    <input
-      type="password"
-      name="password"
-      placeholder="Podaj hasło"
-      v-model="password"
-    /><br />
-    <input type="submit" name="submit" v-on:click="login()" value="Zaloguj" />
-  </div>
-  <div v-if="succeed === true">
-    <h1>Logowanie przebiegło pomyślnie token: {{ token }}</h1>
-  </div>
-  <div v-if="succeed === false">
-    <h1>Logowanie nie powiodło się</h1>
-  </div>
+  <v-container>
+    <v-form ref="form" v-model="valid" lazy-validation>
+      <v-text-field
+        type="text"
+        label="E-mail"
+        name="email"
+        v-model="email"
+        hide-details="auto"
+        :rules="emailRules"
+      ></v-text-field>
+      <br />
+      <v-text-field
+        label="Password"
+        type="password"
+        name="password"
+        v-model="password"
+        :rules="passwordRules"
+        hide-details="auto"
+      /><br />
+      <v-btn color="success" class="mr-4" @click="login"> Zaloguj </v-btn>
+    </v-form>
+  </v-container>
 </template>
 
 <script>
@@ -29,13 +30,27 @@ import router from "@/router";
 export default {
   data() {
     return {
+      valid: false,
       succeed: "",
       token: "",
+      email: "",
+      password: "",
+      emailRules: [
+        (value) => !!value || "Pole wymagane.",
+        (value) => /.+@.+/.test(value) || "Nieprawidłowy adres e-mail",
+      ],
+      passwordRules: [
+        (value) => !!value || "Pole wymagane.",
+        (value) =>
+          (value && value.length >= 4) ||
+          "Hasło musi się składać z przynajmniej 8 znaków",
+      ],
     };
   },
   methods: {
     async login() {
-      if (this.password && this.email) {
+      this.validation();
+      if (this.password && this.email && this.valid) {
         await axios
           .post("http://localhost:8000/api/users/auth", {
             email: this.email,
@@ -59,10 +74,9 @@ export default {
           });
       }
     },
+    validation() {
+      this.$refs.form.validate();
+    },
   },
 };
 </script>
-
-<style scoped lang="scss">
-@import "@/assets/styles/user-forms.sass";
-</style>

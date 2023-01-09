@@ -1,31 +1,34 @@
 <template>
-  <div>
-    <div v-if="stage >= 1" @change.once="stage++">
-      <input type="text" v-model="recipeName" placeholder="Nazwa przepisu" />
-      <input
+  <div class="add-recipe-container">
+    <div v-if="stage >= 1" class="title-div" @change.once="stage++">
+      <v-text-field
+        label="Nazwa przepisu"
+        v-model="recipeName"
+        class="title-field"
+      />
+      <v-file-input
+        label="Zdjęcie potrawy"
+        truncate-length="15"
         type="file"
-        id="file"
         class="file-input"
         @change="getPicture(this.file)"
         accept="image/jpeg, image/png"
       />
     </div>
-    <div v-if="stage >= 2" @change.once="stage++">
-      <select
+    <div class="category-div" v-if="stage >= 2">
+      <v-select
         v-for="cat in categories"
         :key="cat.id"
+        :items="categoryList"
+        item-title="name"
+        item-value="categoryId"
+        label="Wybierz kategorię"
+        return-object
+        object-object
         v-model="categoryModels[cat.id].categoryId"
-        @change.once="addCategory"
+        @update:modelValue.once="stage++"
       >
-        <option value="" selected disabled hidden>Wybierz kategorię</option>
-        <option
-          v-for="category in categoryList"
-          :key="category.id"
-          :value="category.categoryId"
-        >
-          {{ category.name }}
-        </option>
-      </select>
+      </v-select>
     </div>
     <div class="ingredients" v-if="stage >= 3" @change.once="stage++">
       <div
@@ -35,43 +38,63 @@
         :id="ingredient.id"
         @change.once="addIngredient"
       >
-        <input
+        <v-text-field
+          class="ingredient-field"
           type="text"
+          label="Podaj składnik"
           v-model="ingredientModels[ingredient.id].ingredient"
-          placeholder="Podaj składnik"
         />
-        <input
+        <v-text-field
+          class="amount-field"
           type="number"
+          min="0"
           v-model="ingredientModels[ingredient.id].quantity"
-          placeholder="Ilość"
+          label="Podaj ilość"
         />
-        <select v-model="ingredientModels[ingredient.id].unit">
-          <option value="" selected disabled hidden>
-            Wybierz jednostke miary
-          </option>
-          <option v-for="unit in units" :value="unit.id" :key="unit.id">
-            {{ unit.name }}
-          </option>
-        </select>
-        <button type="submit" @click="deleteIngredientRow(ingredient.id)">
+        <v-select
+          class="unit-field"
+          v-model="ingredientModels[ingredient.id].unit"
+          :items="units"
+          item-title="name"
+          item-value="unitId"
+          return-object
+          label="Wybierz jednostkę miary"
+        >
+        </v-select>
+        <v-btn
+          class="ingredient-del-btn"
+          color="error"
+          @click="deleteIngredientRow(ingredient.id)"
+        >
           Usuń ten wiersz
-        </button>
+        </v-btn>
       </div>
-      <div class="cookingSteps" v-if="stage >= 4" @change.once="stage++">
-        <div class="cookingStep-row" v-for="step in steps" :key="step.id">
-          <label>Krok {{ step.id + 1 }}</label>
-          <textarea
+      <div class="cooking-steps" v-if="stage >= 4" @change.once="stage++">
+        <div class="cooking-step-row" v-for="step in steps" :key="step.id">
+          <v-textarea
+            class="cooking-step-textarea"
             v-model="stepModels[step.id].step"
+            :label="'Krok ' + (step.id + 1)"
             @change.once="addStep"
-          ></textarea>
-          <button type="submit" @click="deleteStepRow(step.id)">
+          ></v-textarea>
+          <v-btn
+            class="cooking-step-del-btn"
+            color="error"
+            type="submit"
+            @click="deleteStepRow(step.id)"
+          >
             Usuń ten krok
-          </button>
+          </v-btn>
         </div>
       </div>
-      <button v-if="stage >= 5" type="submit" @click="sendRecipe">
+      <v-btn
+        color="success"
+        v-if="stage >= 5"
+        type="submit"
+        @click="sendRecipe"
+      >
         Dodaj przepis
-      </button>
+      </v-btn>
     </div>
   </div>
 </template>
@@ -100,9 +123,10 @@ export default {
       ingredientModels: [{ ingredient: "", quantity: "", unit: "" }],
       stepModels: [{ step: "" }],
       categoryModels: [{ categoryId: "" }],
-      categoryList: "",
+      categoryList: [],
       units: "",
       image: "",
+      value: null,
     };
   },
   methods: {
@@ -134,6 +158,7 @@ export default {
         categoryId: "",
       });
       this.categoryIndex++;
+      if (this.stage === 2) this.stage++;
     },
     deleteIngredientRow(id) {
       const index = this.ingredients.findIndex((f) => f.id === id);
@@ -205,5 +230,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "@/assets/styles/home-view.sass";
+@import "@/assets/styles/add-recipe-view.sass";
 </style>

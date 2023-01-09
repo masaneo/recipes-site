@@ -1,26 +1,37 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link> |
-    <span v-if="!this.$store.state.token">
-      <router-link to="/login">Logowanie</router-link> |
-      <router-link to="/register">Rejestracja</router-link>
-    </span>
-    <span v-if="this.$store.state.token !== ''">
-      <router-link to="/recipes/addRecipe">Dodaj Przepis</router-link> |
-      <router-link to="/recipes/myRecipes">Moje przepisy</router-link> |
-      <router-link to="/recipes/favouriteRecipes">
-        Ulubione przepisy
-      </router-link>
-      &nbsp;|
-      <router-link to="/" v-on:click="logout()">Wyloguj</router-link>
-    </span>
-  </nav>
-  <router-view />
+  <v-app>
+    <v-main>
+      <nav>
+        <router-link to="/">Home</router-link> |
+        <router-link to="/about">About</router-link> |
+        <span v-if="!this.$store.state.token">
+          <router-link to="/login">Logowanie</router-link> |
+          <router-link to="/register">Rejestracja</router-link>
+        </span>
+        <span v-if="this.$store.state.token !== ''">
+          <router-link to="/recipes/addRecipe">Dodaj Przepis</router-link> |
+          <router-link to="/recipes/myRecipes">Moje przepisy</router-link> |
+          <router-link to="/recipes/favouriteRecipes">
+            Ulubione przepisy
+          </router-link>
+          &nbsp;|
+          <router-link to="/" v-on:click="logout()">Wyloguj</router-link>
+        </span>
+      </nav>
+      <div class="container">
+        <router-view />
+      </div>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
 export default {
+  name: "App",
+
+  data: () => ({
+    //
+  }),
   methods: {
     logout() {
       this.$store.state.token = "";
@@ -45,14 +56,15 @@ html {
   width: 100%;
   height: 100%;
 }
-
+.container {
+  display: flex;
+  justify-content: center;
+}
 nav {
   padding: 30px;
-
   a {
     font-weight: bold;
     color: #2c3e50;
-
     &.router-link-exact-active {
       color: #42b983;
     }

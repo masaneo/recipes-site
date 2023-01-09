@@ -1,6 +1,8 @@
 <template>
-  <div class="register">
-    <RegisterForm />
+  <div class="register-container">
+    <div class="register">
+      <RegisterForm />
+    </div>
   </div>
 </template>
 
@@ -12,3 +14,7 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="scss">
+@import "@/assets/styles/user-forms.sass";
+</style>

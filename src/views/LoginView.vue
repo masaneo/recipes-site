@@ -1,6 +1,8 @@
 <template>
-  <div class="login">
-    <LoginForm />
+  <div class="login-container">
+    <div class="login">
+      <LoginForm />
+    </div>
   </div>
 </template>
 
@@ -12,3 +14,7 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="scss">
+@import "@/assets/styles/user-forms.sass";
+</style>
