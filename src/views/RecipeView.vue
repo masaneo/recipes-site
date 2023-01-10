@@ -1,12 +1,12 @@
 <template>
   <div v-if="dataReady" class="container">
+    <div class="title-row">
+      <h1>{{ recipe.recipe.name }}</h1>
+    </div>
     <div class="content">
-      <div class="title-row">
-        <h1>{{ recipe.recipe.name }}</h1>
-      </div>
-      <div class="first-row">
-        <img :src="recipe.image" alt="NotFound" />
-        <div class="first-row-features">
+      <div class="first-column">
+        <div class="img-div"><img :src="recipe.image" alt="NotFound" /></div>
+        <div class="first-column-features">
           <div class="rating">
             <div>
               <span>Twoja ocena</span>
@@ -21,33 +21,44 @@
             <div>
               <span id="avg-vote">Średnia ocena: {{ this.averageVote }}</span>
             </div>
-            <input
+            <v-btn
               v-if="!favouriteState"
-              type="button"
+              color="success"
               @click="addToFavourite(this.$route.params.id)"
-              value="Dodaj do ulubionych"
-            />
-            <input
+              >Dodaj do ulubionych</v-btn
+            >
+            <v-btn
               v-if="favouriteState"
-              type="button"
+              color="error"
               @click="removeFromFavourite(this.$route.params.id)"
-              value="Usuń z ulubionych"
-            />
+              >Usuń z ulubionych</v-btn
+            >
           </div>
         </div>
       </div>
-      <div class="second-row">
+      <div class="second-column">
         <div class="ingredients">
           <span class="title-span">Potrzebne składniki</span>
-          <ul>
-            <li v-for="item in recipe.ingredients" :key="item.ingredientId">
-              {{ item.amount + " " + item.unit + " " + item.name }}
-            </li>
-          </ul>
+          <div class="ingredient-list">
+            <div
+              class="ingredient-row"
+              v-for="item in recipe.ingredients"
+              :key="item.ingredientId"
+            >
+              <div class="icon-div">
+                <i class="fa-regular fa-pen-to-square"></i>
+              </div>
+              <div class="ingredient-div">
+                {{ item.amount + " " + item.unit + " " + item.name }}
+              </div>
+            </div>
+            <div class="ingredient-row">
+              <v-btn>Dodaj wszystko do listy zakupów</v-btn>
+            </div>
+          </div>
         </div>
         <div class="steps">
           <span class="title-span">Jak przygotować?</span>
-          <br />
           <CookingStep
             v-for="item in recipe.cookingSteps"
             :key="item.stepId"
@@ -163,6 +174,11 @@ export default {
         });
     },
   },
+  computed: {
+    returnBackgroundImage() {
+      return 'background-image: url("~@/assets/images/ingredients-bg.jpg");';
+    },
+  },
   async mounted() {
     await axios
       .post("http://localhost:8000/api/recipes/getSingleRecipe", {
@@ -197,4 +213,7 @@ export default {
 
 <style scoped lang="scss">
 @import "@/assets/styles/recipe-view.sass";
+.container {
+  background-image: url("~@/assets/images/ingredients-bg2.jpg");
+}
 </style>

@@ -23,8 +23,6 @@
         item-title="name"
         item-value="categoryId"
         label="Wybierz kategorię"
-        return-object
-        object-object
         v-model="categoryModels[cat.id].categoryId"
         @update:modelValue.once="stage++"
       >
@@ -56,8 +54,7 @@
           v-model="ingredientModels[ingredient.id].unit"
           :items="units"
           item-title="name"
-          item-value="unitId"
-          return-object
+          item-value="id"
           label="Wybierz jednostkę miary"
         >
         </v-select>
@@ -66,7 +63,7 @@
           color="error"
           @click="deleteIngredientRow(ingredient.id)"
         >
-          Usuń ten wiersz
+          <i class="fa-regular fa-trash-can"></i>
         </v-btn>
       </div>
       <div class="cooking-steps" v-if="stage >= 4" @change.once="stage++">
@@ -83,7 +80,7 @@
             type="submit"
             @click="deleteStepRow(step.id)"
           >
-            Usuń ten krok
+            <i class="fa-regular fa-trash-can"></i>
           </v-btn>
         </div>
       </div>
@@ -209,6 +206,7 @@ export default {
       .then((response) => {
         if (response.data.units) {
           this.units = response.data.units;
+          console.log(this.units);
         }
       })
       .catch((error) => {

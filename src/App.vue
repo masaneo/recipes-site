@@ -59,6 +59,7 @@ html {
 .container {
   display: flex;
   justify-content: center;
+  height: 90%;
 }
 nav {
   padding: 30px;
