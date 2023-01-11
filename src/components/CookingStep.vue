@@ -1,6 +1,8 @@
 <template>
   <div class="step">
-    <span class="step-span">{{ stepNumber + 1 + ". " + step }}</span>
+    <span class="step-span">{{
+      stepNumber + 1 + ". " + capitalized(step)
+    }}</span>
   </div>
 </template>
 
@@ -13,7 +15,14 @@ export default {
   data() {
     return {};
   },
-  methods: {},
+  methods: {
+    capitalized(text) {
+      const firstLetter = text[0].toUpperCase();
+      const rest = text.slice(1);
+
+      return firstLetter + rest;
+    },
+  },
 };
 </script>
 

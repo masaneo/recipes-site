@@ -1,7 +1,7 @@
 <template>
   <div v-if="dataReady" class="container">
     <div class="title-row">
-      <h1>{{ recipe.recipe.name }}</h1>
+      <h1>{{ capitalized(recipe.recipe.name) }}</h1>
     </div>
     <div class="content">
       <div class="first-column">
@@ -45,7 +45,7 @@
               v-for="item in recipe.ingredients"
               :key="item.ingredientId"
             >
-              <div class="icon-div">
+              <div class="icon-div" @click="addToShoppingList(item)">
                 <i class="fa-regular fa-pen-to-square"></i>
               </div>
               <div class="ingredient-div">
@@ -53,7 +53,9 @@
               </div>
             </div>
             <div class="ingredient-row">
-              <v-btn>Dodaj wszystko do listy zakupów</v-btn>
+              <v-btn @click="resetShoppingList()"
+                >Dodaj wszystko do listy zakupów</v-btn
+              >
             </div>
           </div>
         </div>
@@ -173,12 +175,30 @@ export default {
           console.log(error);
         });
     },
-  },
-  computed: {
-    returnBackgroundImage() {
-      return 'background-image: url("~@/assets/images/ingredients-bg.jpg");';
+    capitalized(text) {
+      const firstLetter = text[0].toUpperCase();
+      const rest = text.slice(1);
+
+      return firstLetter + rest;
+    },
+    addToShoppingList(it) {
+      const newItem = {
+        ingredientId: it.ingredientId,
+        name: it.name,
+        unit: it.unit,
+        amount: it.amount,
+      };
+      this.$store.commit("addToShoppingList", newItem);
+
+      console.log(this.$store.state.shoppingList);
+    },
+    resetShoppingList() {
+      this.$store.commit("clearShoppingList");
+      console.log("Clearing shopping list...");
+      console.log(this.$store.state.shoppingList);
     },
   },
+  computed: {},
   async mounted() {
     await axios
       .post("http://localhost:8000/api/recipes/getSingleRecipe", {
@@ -214,6 +234,6 @@ export default {
 <style scoped lang="scss">
 @import "@/assets/styles/recipe-view.sass";
 .container {
-  background-image: url("~@/assets/images/ingredients-bg2.jpg");
+  background-image: url("~@/assets/images/bg-board.jpg");
 }
 </style>
