@@ -12,6 +12,7 @@ const store = createStore({
       state.token = token;
     },
     addToShoppingList(state, itz) {
+      let found = false;
       if (state.shoppingList.length > 0) {
         for (let i = 0; i < state.shoppingList.length; i++) {
           if (
@@ -20,29 +21,25 @@ const store = createStore({
           ) {
             state.shoppingList[i].amount =
               parseFloat(state.shoppingList[i].amount) + parseFloat(itz.amount);
+            found = true;
+            break;
           } else {
-            state.shoppingList.push(itz);
+            found = false;
           }
         }
       } else {
         state.shoppingList.push(itz);
+        found = true;
       }
-
-      // if (state.shoppingList.includes(items)) {
-      //   state.shoppingList.forEach(function (itz) {
-      //     if (
-      //       itz.ingredientId === items.ingredientId &&
-      //       itz.unit === items.unit
-      //     ) {
-      //       itz.amount = parseFloat(itz.amount) + parseFloat(items.amount);
-      //     }
-      //   });
-      // } else {
-      //   state.shoppingList.push(items);
-      // }
+      if (!found) {
+        state.shoppingList.push(itz);
+      }
     },
     clearShoppingList(state) {
       state.shoppingList.length = 0;
+    },
+    removeFromShoppingList(state, index) {
+      state.shoppingList.splice(index, 1);
     },
   },
   actions: {},

@@ -53,7 +53,7 @@
               </div>
             </div>
             <div class="ingredient-row">
-              <v-btn @click="resetShoppingList()"
+              <v-btn @click="addAllToShoppingList()"
                 >Dodaj wszystko do listy zakupów</v-btn
               >
             </div>
@@ -189,13 +189,11 @@ export default {
         amount: it.amount,
       };
       this.$store.commit("addToShoppingList", newItem);
-
-      console.log(this.$store.state.shoppingList);
     },
-    resetShoppingList() {
-      this.$store.commit("clearShoppingList");
-      console.log("Clearing shopping list...");
-      console.log(this.$store.state.shoppingList);
+    addAllToShoppingList() {
+      this.recipe.ingredients.forEach((item) => {
+        this.addToShoppingList(item);
+      });
     },
   },
   computed: {},

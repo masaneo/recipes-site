@@ -12,7 +12,56 @@
             </div>
           </div>
           <div class="dropdown-div navbar-item">
-            <div class="aselect">
+            <div class="shoppinglist-dropdown">
+              <div
+                class="selector"
+                @mouseenter="showShopping()"
+                @mouseleave="hideShopping()"
+                id="print"
+              >
+                <div class="label">
+                  <i class="fas fa-pen-to-square"></i>
+                </div>
+                <div
+                  :class="{ hidden: !svisible, svisible }"
+                  class="dropdown-list"
+                >
+                  <div class="shopping-header">
+                    <span>Lista zakupów</span>
+                    <div>
+                      <i
+                        class="fas fa-print shopping-list-icon"
+                        @click="printShoppingList"
+                      ></i>
+                      &nbsp;
+                      <i
+                        class="fas fa-times shopping-list-icon"
+                        @click="resetShoppingList"
+                      ></i>
+                    </div>
+                  </div>
+                  <div v-if="this.$store.state.shoppingList.length == 0">
+                    Twoja lista zakupów jest pusta
+                  </div>
+                  <div
+                    class="shopping-item"
+                    v-for="(item, i) in this.$store.state.shoppingList"
+                    :key="i"
+                  >
+                    <div>
+                      <i
+                        class="fas fa-times shopping-list-icon"
+                        @click="removeFromShoppingList(i)"
+                      ></i>
+                      {{ item.amount + " " + item.unit + " " + item.name }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="dropdown-div navbar-item">
+            <div class="user-dropdown">
               <div class="selector" @mouseenter="show()" @mouseleave="hide()">
                 <div class="label"><i class="fas fa-user"></i></div>
                 <div
@@ -68,6 +117,7 @@ export default {
 
   data: () => ({
     visible: false,
+    svisible: false,
   }),
   methods: {
     logout() {
@@ -79,6 +129,47 @@ export default {
     },
     hide() {
       this.visible = false;
+    },
+    showShopping() {
+      this.svisible = true;
+    },
+    hideShopping() {
+      this.svisible = false;
+    },
+    resetShoppingList() {
+      this.$store.commit("clearShoppingList");
+      console.log("Clearing shopping list...");
+      console.log(this.$store.state.shoppingList);
+    },
+    removeFromShoppingList(index) {
+      this.$store.commit("removeFromShoppingList", index);
+      console.log("Removing from shopping list...");
+    },
+    printShoppingList() {
+      let stylesHtml = "";
+      const prtHtml = document.getElementById("print").innerHTML;
+      const WinPrint = window.open(
+        "",
+        "xd",
+        "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0 popup"
+      );
+      WinPrint.document.write(`<!DOCTYPE html>
+        <html>
+          <head>
+            ${stylesHtml}
+            <title>Lista zakupów</title>
+          </head>
+          <body>
+            ${prtHtml}
+          </body>
+        </html>`);
+
+      WinPrint.document.close();
+      WinPrint.focus();
+      WinPrint.print();
+      window.setTimeout(() => {
+        WinPrint.close();
+      }, 100);
     },
   },
 };
@@ -178,7 +269,7 @@ html {
 .visible {
   visibility: visible;
 }
-.aselect {
+.user-dropdown {
   width: 100%;
   height: 100%;
   display: block;
@@ -208,5 +299,59 @@ html {
     text-align: left;
     padding-left: 5%;
   }
+}
+.shoppinglist-dropdown {
+  width: 100%;
+  height: 100%;
+  display: block;
+  .selector {
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    .label {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.2em;
+      width: 100%;
+      height: 100%;
+    }
+    .dropdown-list {
+      width: 200%;
+      position: absolute;
+      right: 0;
+      background-color: #fff;
+      color: #000;
+      padding-left: 10%;
+      padding-right: 10%;
+      .shopping-header {
+        font-size: 1.4em;
+        font-weight: bold;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        border-bottom: 2px solid green;
+      }
+      .shopping-item {
+        width: 100%;
+        border-bottom: 1px solid green;
+        padding-top: 2%;
+        padding-bottom: 2%;
+        div {
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          gap: 5%;
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+.shopping-list-icon:hover {
+  color: green;
+  cursor: pointer;
 }
 </style>
