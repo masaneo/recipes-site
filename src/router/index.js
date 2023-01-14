@@ -10,7 +10,7 @@ import FavouriteRecipesView from "@/views/FavouriteRecipesView";
 const routes = [
   {
     path: "/",
-    name: "home",
+    name: "HomeView",
     component: HomeView,
   },
   {

@@ -7,9 +7,6 @@
             <div class="navbar-item">
               <router-link to="/">Home</router-link>
             </div>
-            <div class="navbar-item">
-              <router-link to="/about">About</router-link>
-            </div>
           </div>
           <div class="dropdown-div navbar-item">
             <div class="shoppinglist-dropdown">
