@@ -68,7 +68,9 @@ export default {
     },
     async getAllRecipes(page) {
       await axios
-        .get("http://localhost:8000/api/recipes/getAllRecipes?page=" + page)
+        .get(
+          process.env.VUE_APP_API_BASEURL + "recipes/getAllRecipes?page=" + page
+        )
         .then((response) => {
           this.recipes = response.data;
           this.links = response.data.links;
@@ -98,7 +100,7 @@ export default {
         !this.router.currentRoute.value.query.page
       ) {
         await axios
-          .get("http://localhost:8000/api/recipes/searchRecipes", {
+          .get(process.env.VUE_APP_API_BASEURL + "recipes/searchRecipes", {
             params: { searchString: this.searchText },
           })
           .then((response) => {
