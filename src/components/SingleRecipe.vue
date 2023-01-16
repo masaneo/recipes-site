@@ -26,7 +26,8 @@ export default {
   mounted() {
     axios
       .get(
-        "http://localhost:8000/api/recipes/getSingleRecipe/" +
+        process.env.VUE_APP_API_BASEURL +
+          "recipes/getSingleRecipe/" +
           this.recipeId +
           "/getImage"
       )

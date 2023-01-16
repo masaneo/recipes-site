@@ -43,7 +43,7 @@ export default {
   },
   mounted() {
     axios
-      .get("http://localhost:8000/api/recipes/votes/highestVoted")
+      .get(process.env.VUE_APP_API_BASEURL + "recipes/votes/highestVoted")
       .then((response) => {
         this.recipes = response.data;
       })

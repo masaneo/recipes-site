@@ -105,7 +105,7 @@ export default {
     giveVote() {
       if (this.$store.state.token) {
         axios
-          .post("http://localhost:8000/api/recipes/votes/addVote", {
+          .post(process.env.VUE_APP_API_BASEURL + "recipes/votes/addVote", {
             vote: this.rating,
             token: this.$store.state.token,
             recipeId: this.$route.params.id,
@@ -129,7 +129,7 @@ export default {
     addToFavourite(id) {
       if (this.$store.state.token) {
         axios
-          .post("http://localhost:8000/api/recipes/addToFavourite", {
+          .post(process.env.VUE_APP_API_BASEURL + "recipes/addToFavourite", {
             token: this.$store.state.token,
             recipeId: id,
           })
@@ -146,12 +146,15 @@ export default {
     },
     removeFromFavourite(id) {
       axios
-        .delete("http://localhost:8000/api/recipes/removeFromFavourite", {
-          data: {
-            token: this.$store.state.token,
-            recipeId: id,
-          },
-        })
+        .delete(
+          process.env.VUE_APP_API_BASEURL + "recipes/removeFromFavourite",
+          {
+            data: {
+              token: this.$store.state.token,
+              recipeId: id,
+            },
+          }
+        )
         .then((response) => {
           this.favouriteState = false;
           console.log(response.data.message);
@@ -162,7 +165,7 @@ export default {
     },
     getAverageVote() {
       axios
-        .get("http://localhost:8000/api/recipes/votes/getAverageVote", {
+        .get(process.env.VUE_APP_API_BASEURL + "recipes/votes/getAverageVote", {
           params: {
             recipeId: this.$route.params.id,
           },
@@ -199,7 +202,7 @@ export default {
   computed: {},
   async mounted() {
     await axios
-      .post("http://localhost:8000/api/recipes/getSingleRecipe", {
+      .post(process.env.VUE_APP_API_BASEURL + "recipes/getSingleRecipe", {
         id: this.$route.params.id,
         token: this.$store.state.token,
       })
@@ -212,7 +215,7 @@ export default {
         console.log(error);
       });
     await axios
-      .get("http://localhost:8000/api/recipes/votes/getUserVote", {
+      .get(process.env.VUE_APP_API_BASEURL + "recipes/votes/getUserVote", {
         params: {
           token: this.$store.state.token,
           recipeId: this.$route.params.id,

@@ -31,7 +31,7 @@ export default {
   },
   async mounted() {
     await axios
-      .get("http://localhost:8000/api/recipes/getFavouriteRecipes", {
+      .get(process.env.VUE_APP_API_BASEURL + "recipes/getFavouriteRecipes", {
         params: {
           token: this.$store.state.token,
         },

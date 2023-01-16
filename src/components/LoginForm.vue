@@ -52,7 +52,7 @@ export default {
       this.validation();
       if (this.password && this.email && this.valid) {
         await axios
-          .post("http://localhost:8000/api/users/auth", {
+          .post(process.env.VUE_APP_API_BASEURL + "users/auth", {
             email: this.email,
             password: this.password,
           })

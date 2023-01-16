@@ -192,7 +192,7 @@ export default {
     },
     sendRecipe() {
       axios
-        .post("http://localhost:8000/api/recipes/addRecipe", {
+        .post(process.env.VUE_APP_API_BASEURL + "recipes/addRecipe", {
           token: this.$store.state.token,
           name: this.recipeName,
           steps: this.stepModels,
@@ -216,7 +216,7 @@ export default {
     }
     // get all units from api
     axios
-      .get("http://localhost:8000/api/recipes/units/getAllUnits")
+      .get(process.env.VUE_APP_API_BASEURL + "recipes/units/getAllUnits")
       .then((response) => {
         if (response.data.units) {
           this.units = response.data.units;
@@ -228,7 +228,9 @@ export default {
       });
     // get all categories from api
     axios
-      .get("http://localhost:8000/api/recipes/categories/getAllCategories")
+      .get(
+        process.env.VUE_APP_API_BASEURL + "recipes/categories/getAllCategories"
+      )
       .then((response) => {
         if (response.data.categories) {
           this.categoryList = response.data.categories;

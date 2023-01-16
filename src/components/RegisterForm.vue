@@ -79,7 +79,7 @@ export default {
       ) {
         if (this.password === this.repeatPassword) {
           await axios
-            .post("http://localhost:8000/api/users", {
+            .post(process.env.VUE_APP_API_BASEURL + "users", {
               email: this.email,
               password: this.password,
               username: this.username,
