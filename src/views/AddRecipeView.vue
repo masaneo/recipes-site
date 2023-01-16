@@ -38,6 +38,7 @@
         :key="ingredient.id"
         :id="ingredient.id"
         @change.once="addIngredient"
+        @change="ingredients[ingredient.id].required = true"
       >
         <v-text-field
           class="ingredient-field"
@@ -45,6 +46,7 @@
           label="Podaj składnik"
           v-model="ingredientModels[ingredient.id].ingredient"
           hide-details="auto"
+          :rules="rules"
         />
         <v-text-field
           class="amount-field"
@@ -53,6 +55,7 @@
           v-model="ingredientModels[ingredient.id].quantity"
           label="Podaj ilość"
           hide-details="auto"
+          :rules="rules"
         />
         <v-select
           class="unit-field"
@@ -62,6 +65,7 @@
           item-value="id"
           label="Wybierz jednostkę miary"
           hide-details="auto"
+          :rules="rules"
         >
         </v-select>
         <v-btn
@@ -122,7 +126,7 @@ export default {
       index: 1,
       stepIndex: 1,
       categoryIndex: 1,
-      ingredients: [{ id: 0, name: "div0" }],
+      ingredients: [{ id: 0, name: "div0", required: false }],
       steps: [{ id: 0, name: "div0" }],
       categories: [{ id: 0, name: "div0" }],
       passedData: [],
@@ -140,6 +144,7 @@ export default {
       this.ingredients.push({
         id: this.index,
         name: "div" + this.index,
+        required: false,
       });
       this.ingredientModels.push({ ingredient: "", quantity: "", unit: "" });
       console.log(this.index);

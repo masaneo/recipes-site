@@ -2,19 +2,18 @@
   <div class="recipes-container">
     <div class="recipes">
       <SingleRecipe
-        v-for="item in res.data"
+        v-for="item in recipes.data"
         :key="item.recipeId"
         :recipeName="item.name"
         :recipeId="item.recipeId"
       />
     </div>
     <vue-awesome-paginate
-      v-model="curPage"
-      :total-items="res.total"
-      :items-per-page="res.per_page"
+      :total-items="recipes.total"
+      :items-per-page="recipes.per_page"
       :max-pages-shown="5"
       :on-click="changePageHandler"
-      :current-page="curPage"
+      v-model="curPage"
     />
   </div>
 </template>
@@ -23,6 +22,7 @@
 // @ is an alias to /src
 import SingleRecipe from "@/components/SingleRecipe.vue";
 import router from "@/router";
+import axios from "axios";
 
 export default {
   name: "HomeView",
@@ -31,46 +31,100 @@ export default {
   },
   data() {
     return {
-      curPage: this.currentPage,
+      page: "",
+      curPage: 1,
+      searchText: "",
+      recipes: "",
+      links: [],
     };
   },
-  methods: {},
+  methods: {
+    changePageHandler(page) {
+      if (router.currentRoute.value.query.search) {
+        router.push({
+          query: { search: router.currentRoute.value.query.search, page: page },
+        });
+      } else {
+        router.push({ query: { page: page } });
+      }
+      this.getRecipesData(page);
+      this.curPage = page;
+      console.log("page change");
+    },
+    getRecipesData(page) {
+      axios
+        .get(this.links[page].url, {
+          params: { searchString: this.searchText },
+        })
+        .then((response) => {
+          this.recipes = response.data;
+          console.log(this.recipes);
+          console.log("dupa");
+          console.log(page);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    async getAllRecipes(page) {
+      await axios
+        .get("http://localhost:8000/api/recipes/getAllRecipes?page=" + page)
+        .then((response) => {
+          this.recipes = response.data;
+          this.links = response.data.links;
+          console.log(this.recipes);
+          console.log("testing");
+          console.log(response);
+          console.log(this.links);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+  },
+  async mounted() {
+    this.curPage = router.currentRoute.value.query.page
+      ? parseInt(router.currentRoute.value.query.page)
+      : 1;
+    this.getAllRecipes(this.curPage);
+  },
+  watch: {
+    async $route() {
+      this.searchText = this.router.currentRoute.value.query.search;
+      if (!this.searchText) {
+        this.getAllRecipes(this.curPage);
+      } else if (
+        this.searchText &&
+        !this.router.currentRoute.value.query.page
+      ) {
+        await axios
+          .get("http://localhost:8000/api/recipes/searchRecipes", {
+            params: { searchString: this.searchText },
+          })
+          .then((response) => {
+            this.recipes = response.data;
+            this.links = response.data.links;
+            this.curPage = 1;
+            console.log("xd");
+            console.log(this.recipes);
+            console.log(this.links);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else if (this.searchText && this.router.currentRoute.value.query.page) {
+        this.getRecipesData(this.curPage);
+      }
+      if (!this.searchText && !this.router.currentRoute.value.query.page) {
+        this.curPage = 1;
+      }
+    },
+  },
 };
 </script>
 
 <script setup>
-import { onBeforeMount, ref } from "vue";
 import { VueAwesomePaginate } from "vue-awesome-paginate";
-import axios from "axios";
-
-let currentPage = router.currentRoute.value.query.page
-  ? parseInt(router.currentRoute.value.query.page)
-  : 1;
-const res = ref([]);
-
-onBeforeMount(async () => {
-  res.value = await fetch(
-    "http://localhost:8000/api/recipes/getAllRecipes?page=" + currentPage
-  ).then((raw) => raw.json());
-});
-
-const changePageHandler = async (page) => {
-  router.push({ query: { page: page } });
-  currentPage = page;
-  getRecipesData(currentPage);
-};
-
-const getRecipesData = async (page) => {
-  axios
-    .get("http://localhost:8000/api/recipes/getAllRecipes?page=" + page)
-    .then((response) => {
-      res.value = response.data;
-      console.log(res);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
 </script>
 
 <style scoped lang="scss">

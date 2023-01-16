@@ -15,6 +15,7 @@
                 placeholder="Wyszukaj przepis"
                 v-model="searchRecipe"
                 class="search-field"
+                @keyup.enter="searchForRecipe"
               />
               <button class="search-button" @click="searchForRecipe">
                 <i class="fas fa-search"></i>
@@ -185,7 +186,8 @@ export default {
       }, 100);
     },
     searchForRecipe() {
-      router.push({ query: { recipe: this.searchRecipe } });
+      router.push({ path: "/", query: { search: this.searchRecipe } });
+      this.searchRecipe = "";
     },
   },
 };
@@ -288,6 +290,8 @@ html {
   height: 100%;
   justify-content: center;
   align-items: center;
+  padding-left: 2%;
+  padding-right: 2%;
   .search-field {
     background-color: white;
     width: 90%;
