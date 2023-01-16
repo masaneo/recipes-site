@@ -5,6 +5,7 @@
         label="Nazwa przepisu"
         v-model="recipeName"
         class="title-field"
+        hide-details="auto"
       />
       <v-file-input
         label="Zdjęcie potrawy"
@@ -13,6 +14,7 @@
         class="file-input"
         @change="getPicture(this.file)"
         accept="image/jpeg, image/png"
+        hide-details="auto"
       />
     </div>
     <div class="category-div" v-if="stage >= 2">
@@ -25,6 +27,7 @@
         label="Wybierz kategorię"
         v-model="categoryModels[cat.id].categoryId"
         @update:modelValue.once="stage++"
+        hide-details="auto"
       >
       </v-select>
     </div>
@@ -41,6 +44,7 @@
           type="text"
           label="Podaj składnik"
           v-model="ingredientModels[ingredient.id].ingredient"
+          hide-details="auto"
         />
         <v-text-field
           class="amount-field"
@@ -48,6 +52,7 @@
           min="0"
           v-model="ingredientModels[ingredient.id].quantity"
           label="Podaj ilość"
+          hide-details="auto"
         />
         <v-select
           class="unit-field"
@@ -56,12 +61,14 @@
           item-title="name"
           item-value="id"
           label="Wybierz jednostkę miary"
+          hide-details="auto"
         >
         </v-select>
         <v-btn
           class="ingredient-del-btn"
           color="error"
           @click="deleteIngredientRow(ingredient.id)"
+          hide-details="auto"
         >
           <i class="fa-regular fa-trash-can"></i>
         </v-btn>
@@ -73,12 +80,14 @@
             v-model="stepModels[step.id].step"
             :label="'Krok ' + (step.id + 1)"
             @change.once="addStep"
+            hide-details="auto"
           ></v-textarea>
           <v-btn
             class="cooking-step-del-btn"
             color="error"
             type="submit"
             @click="deleteStepRow(step.id)"
+            hide-details="auto"
           >
             <i class="fa-regular fa-trash-can"></i>
           </v-btn>

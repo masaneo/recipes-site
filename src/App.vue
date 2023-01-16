@@ -7,6 +7,19 @@
             <div class="navbar-item">
               <router-link to="/">Home</router-link>
             </div>
+            <div class="navbar-item">
+              <router-link to="/recipes/ranking">Ranking</router-link>
+            </div>
+            <div class="navbar-search">
+              <input
+                placeholder="Wyszukaj przepis"
+                v-model="searchRecipe"
+                class="search-field"
+              />
+              <button class="search-button" @click="searchForRecipe">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
           </div>
           <div class="dropdown-div navbar-item">
             <div class="shoppinglist-dropdown">
@@ -109,12 +122,15 @@
 </template>
 
 <script>
+import router from "@/router";
+
 export default {
   name: "App",
 
   data: () => ({
     visible: false,
     svisible: false,
+    searchRecipe: "",
   }),
   methods: {
     logout() {
@@ -168,11 +184,14 @@ export default {
         WinPrint.close();
       }, 100);
     },
+    searchForRecipe() {
+      router.push({ query: { recipe: this.searchRecipe } });
+    },
   },
 };
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 $navbar-background-color: #009100;
 body,
 html {
@@ -191,13 +210,15 @@ html {
 .container {
   display: flex;
   justify-content: center;
-  height: 95%;
+  height: 100%;
+  padding-top: 50px;
 }
 .navbar {
   width: 100%;
   height: 5%;
   background-color: $navbar-background-color;
   display: flex;
+  position: fixed;
   nav {
     width: 100%;
     height: 100%;
@@ -258,6 +279,33 @@ html {
 .navbar-span {
   .navbar-item {
     color: red;
+  }
+}
+.navbar-search {
+  display: flex;
+  flex-direction: row;
+  width: 40%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  .search-field {
+    background-color: white;
+    width: 90%;
+    height: 60%;
+    padding-left: 10px;
+  }
+  .search-field:focus {
+    outline: none;
+  }
+  .search-button {
+    width: 10%;
+    height: 60%;
+    background-color: $navbar-background-color;
+    color: white;
+  }
+  .search-button:hover {
+    background-color: white;
+    color: $navbar-background-color;
   }
 }
 .hidden {

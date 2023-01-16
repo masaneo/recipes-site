@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="recipes-container">
     <div class="recipes">
       <SingleRecipe
         v-for="item in res.data"
@@ -52,7 +52,6 @@ onBeforeMount(async () => {
   res.value = await fetch(
     "http://localhost:8000/api/recipes/getAllRecipes?page=" + currentPage
   ).then((raw) => raw.json());
-  console.log(res);
 });
 
 const changePageHandler = async (page) => {

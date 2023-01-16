@@ -6,6 +6,7 @@ import RecipeView from "@/views/RecipeView";
 import AddRecipeView from "@/views/AddRecipeView";
 import UserRecipesView from "@/views/UserRecipesView";
 import FavouriteRecipesView from "@/views/FavouriteRecipesView";
+import RecipesRankingView from "@/views/RecipesRankingView";
 
 const routes = [
   {
@@ -51,6 +52,11 @@ const routes = [
     path: "/recipes/favouriteRecipes",
     name: "FavouriteRecipes",
     component: FavouriteRecipesView,
+  },
+  {
+    path: "/recipes/ranking",
+    name: "RecipesRanking",
+    component: RecipesRankingView,
   },
 ];
 
