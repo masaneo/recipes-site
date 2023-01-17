@@ -1,6 +1,7 @@
 <template>
-  <div class="register-form">
-    <v-form ref="form" v-model="valid" lazy-validation>
+  <v-container>
+    <div class="error-div" v-if="failed">{{ message }}</div>
+    <v-form ref="form" v-model="valid" lazy-validation class="user-form">
       <v-text-field
         type="text"
         label="Nazwa użytkownika"
@@ -8,14 +9,15 @@
         :rules="usernameRules"
         hide-details="auto"
         v-model="username"
-      /><br />
+      />
       <v-text-field
         type="text"
         name="email"
         label="Podaj email"
+        hide-details="auto"
         :rules="emailRules"
         v-model="email"
-      /><br />
+      />
       <v-text-field
         type="password"
         name="password"
@@ -23,7 +25,7 @@
         hide-details="auto"
         :rules="passwordRules"
         v-model="password"
-      /><br />
+      />
       <v-text-field
         type="password"
         name="repeatPassword"
@@ -31,21 +33,24 @@
         hide-details="auto"
         :rules="repeatedPasswordRules.concat(passwordRules)"
         v-model="repeatPassword"
-      /><br />
+      />
       <v-btn color="success" class="mr-4" @click="register()"
         >Zarejestruj</v-btn
       >
     </v-form>
-  </div>
+  </v-container>
 </template>
 
 <script>
 import axios from "axios";
+import router from "@/router";
 
 export default {
   data() {
     return {
       valid: false,
+      failed: false,
+      message: "",
       username: "",
       email: "",
       password: "",
@@ -85,8 +90,14 @@ export default {
               username: this.username,
             })
             .then((response) => {
-              console.log(response);
-              this.succeed = true;
+              if (response.data.message) {
+                this.message = response.data.message;
+                this.failed = true;
+                console.log(response.data.message);
+              } else {
+                router.push("/login");
+                this.failed = false;
+              }
             })
             .catch((error) => {
               console.log(error);
@@ -101,3 +112,21 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="scss">
+.error-div {
+  background-color: rgba(252, 58, 40, 0.75);
+  padding: 10px;
+  font-size: 1.2em;
+  color: white;
+}
+.user-form {
+  display: flex;
+  height: 75%;
+  flex-direction: column;
+  gap: 2%;
+  .v-btn {
+    width: 100%;
+  }
+}
+</style>

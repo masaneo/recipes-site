@@ -43,6 +43,7 @@
                       <i
                         class="fas fa-print shopping-list-icon"
                         @click="printShoppingList"
+                        v-if="!isShoppingListEmpty"
                       ></i>
                       &nbsp;
                       <i
@@ -51,7 +52,10 @@
                       ></i>
                     </div>
                   </div>
-                  <div v-if="this.$store.state.shoppingList.length == 0">
+                  <div
+                    v-if="this.$store.state.shoppingList.length == 0"
+                    class="shopping-item"
+                  >
                     Twoja lista zakupów jest pusta
                   </div>
                   <div
@@ -190,6 +194,12 @@ export default {
       this.searchRecipe = "";
     },
   },
+  computed: {
+    isShoppingListEmpty() {
+      console.log(this.$store.state.shoppingList.length);
+      return this.$store.state.shoppingList.length == 0;
+    },
+  },
 };
 </script>
 
@@ -213,7 +223,7 @@ html {
   display: flex;
   justify-content: center;
   height: 100%;
-  padding-top: 50px;
+  padding-top: 40px;
 }
 .navbar {
   width: 100%;
@@ -221,6 +231,7 @@ html {
   background-color: $navbar-background-color;
   display: flex;
   position: fixed;
+  z-index: 1;
   nav {
     width: 100%;
     height: 100%;
@@ -374,6 +385,8 @@ html {
       color: #000;
       padding-left: 10%;
       padding-right: 10%;
+      border-left: 2px solid green;
+      border-right: 2px solid green;
       .shopping-header {
         font-size: 1.4em;
         font-weight: bold;

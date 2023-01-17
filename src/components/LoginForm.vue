@@ -1,6 +1,7 @@
 <template>
   <v-container>
-    <v-form ref="form" v-model="valid" lazy-validation>
+    <v-form ref="form" v-model="valid" lazy-validation class="user-form">
+      <div v-if="failed" class="error-div">{{ message }}</div>
       <v-text-field
         type="text"
         label="E-mail"
@@ -31,7 +32,8 @@ export default {
   data() {
     return {
       valid: false,
-      succeed: "",
+      message: "",
+      failed: false,
       token: "",
       email: "",
       password: "",
@@ -63,14 +65,16 @@ export default {
               if (!this.$store.state.token) {
                 this.$store.commit("setToken", response.data.token);
               }
-              this.succeed = true;
+              this.failed = false;
+              this.message = "";
               router.push("/");
             }
-            this.succeed = false;
+            this.failed = true;
+            this.message = response.data.message;
           })
           .catch((error) => {
             console.log(error);
-            this.succeed = false;
+            this.failed = true;
           });
       }
     },
@@ -80,3 +84,20 @@ export default {
   },
 };
 </script>
+<style scoped lang="scss">
+.error-div {
+  background-color: rgba(252, 58, 40, 0.75);
+  padding: 10px;
+  font-size: 1.2em;
+  color: white;
+}
+.user-form {
+  display: flex;
+  height: 45%;
+  flex-direction: column;
+  gap: 2%;
+  .v-btn {
+    width: 100%;
+  }
+}
+</style>

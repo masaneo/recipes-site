@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="recipes-container">
     <div class="recipes">
       <SingleRecipe
         v-for="item in recipes"
