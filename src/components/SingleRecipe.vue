@@ -3,8 +3,8 @@
     <div>
       <img width="150" height="100" :src="this.image" alt="Image Not Loaded" />
     </div>
-    <div>
-      <span>{{ recipeName }}</span>
+    <div class="recipe-name">
+      {{ capitalized(recipeName) }}
     </div>
   </div>
 </template>
@@ -41,6 +41,12 @@ export default {
   methods: {
     showRecipe() {
       router.push({ name: "SingleRecipe", params: { id: this.recipeId } });
+    },
+    capitalized(text) {
+      const firstLetter = text[0].toUpperCase();
+      const rest = text.slice(1);
+
+      return firstLetter + rest;
     },
   },
 };
