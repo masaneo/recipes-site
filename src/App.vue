@@ -10,7 +10,7 @@
             <div class="navbar-item">
               <router-link to="/recipes/ranking">Ranking</router-link>
             </div>
-            <div class="navbar-search" :class="{ hidden: !checkWidth }">
+            <div class="navbar-search">
               <input
                 placeholder="Wyszukaj przepis"
                 v-model="searchRecipe"
@@ -22,102 +22,104 @@
               </button>
             </div>
           </div>
-          <div class="navbar-item">
-            <router-link to="/recipes/findRecipe">
-              <i class="fas fa-question"></i>
-            </router-link>
-          </div>
-          <div class="dropdown-div navbar-item">
-            <div class="shoppinglist-dropdown">
-              <div
-                class="selector"
-                @mouseenter="showShopping()"
-                @mouseleave="hideShopping()"
-                id="print"
-              >
-                <div class="label">
-                  <i class="fas fa-pen-to-square"></i>
-                </div>
+          <div class="navbar-right">
+            <div class="navbar-item">
+              <router-link to="/recipes/findRecipe">
+                <i class="fas fa-question"></i>
+              </router-link>
+            </div>
+            <div class="dropdown-div navbar-item">
+              <div class="shoppinglist-dropdown">
                 <div
-                  :class="{ hidden: !svisible, svisible }"
-                  class="dropdown-list"
+                  class="selector"
+                  @mouseenter="showShopping()"
+                  @mouseleave="hideShopping()"
+                  id="print"
                 >
-                  <div class="shopping-header">
-                    <span>Lista zakupów</span>
-                    <div>
-                      <i
-                        class="fas fa-print shopping-list-icon"
-                        @click="printShoppingList"
-                        v-if="!isShoppingListEmpty"
-                      ></i>
-                      &nbsp;
-                      <i
-                        class="fas fa-times shopping-list-icon"
-                        @click="resetShoppingList"
-                      ></i>
+                  <div class="label">
+                    <i class="fas fa-pen-to-square"></i>
+                  </div>
+                  <div
+                    :class="{ hidden: !svisible, svisible }"
+                    class="dropdown-list"
+                  >
+                    <div class="shopping-header">
+                      <span>Lista zakupów</span>
+                      <div>
+                        <i
+                          class="fas fa-print shopping-list-icon"
+                          @click="printShoppingList"
+                          v-if="!isShoppingListEmpty"
+                        ></i>
+                        &nbsp;
+                        <i
+                          class="fas fa-times shopping-list-icon"
+                          @click="resetShoppingList"
+                        ></i>
+                      </div>
                     </div>
-                  </div>
-                  <div
-                    v-if="this.$store.state.shoppingList.length == 0"
-                    class="shopping-item"
-                  >
-                    Twoja lista zakupów jest pusta
-                  </div>
-                  <div
-                    class="shopping-item"
-                    v-for="(item, i) in this.$store.state.shoppingList"
-                    :key="i"
-                  >
-                    <div>
-                      <i
-                        class="fas fa-times shopping-list-icon"
-                        @click="removeFromShoppingList(i)"
-                      ></i>
-                      {{ item.amount + " " + item.unit + " " + item.name }}
+                    <div
+                      v-if="this.$store.state.shoppingList.length == 0"
+                      class="shopping-item"
+                    >
+                      Twoja lista zakupów jest pusta
+                    </div>
+                    <div
+                      class="shopping-item"
+                      v-for="(item, i) in this.$store.state.shoppingList"
+                      :key="i"
+                    >
+                      <div>
+                        <i
+                          class="fas fa-times shopping-list-icon"
+                          @click="removeFromShoppingList(i)"
+                        ></i>
+                        {{ item.amount + " " + item.unit + " " + item.name }}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="dropdown-div navbar-item">
-            <div class="user-dropdown">
-              <div class="selector" @mouseenter="show()" @mouseleave="hide()">
-                <div class="label"><i class="fas fa-user"></i></div>
-                <div
-                  :class="{ hidden: !visible, visible }"
-                  class="dropdown-list"
-                >
-                  <span v-if="!this.$store.state.token" class="navbar-span">
-                    <div class="navbar-item">
-                      <router-link to="/login">Logowanie</router-link>
-                    </div>
-                    <div class="navbar-item">
-                      <router-link to="/register">Rejestracja</router-link>
-                    </div>
-                  </span>
-                  <span v-if="this.$store.state.token" class="navbar-span">
-                    <div class="navbar-item">
-                      <router-link to="/recipes/addRecipe"
-                        >Dodaj Przepis</router-link
-                      >
-                    </div>
-                    <div class="navbar-item">
-                      <router-link to="/recipes/myRecipes"
-                        >Moje przepisy</router-link
-                      >
-                    </div>
-                    <div class="navbar-item">
-                      <router-link to="/recipes/favouriteRecipes">
-                        Ulubione przepisy
-                      </router-link>
-                    </div>
-                    <div class="navbar-item">
-                      <router-link to="/" v-on:click="logout()"
-                        >Wyloguj</router-link
-                      >
-                    </div>
-                  </span>
+            <div class="dropdown-div navbar-item">
+              <div class="user-dropdown">
+                <div class="selector" @mouseenter="show()" @mouseleave="hide()">
+                  <div class="label"><i class="fas fa-user"></i></div>
+                  <div
+                    :class="{ hidden: !visible, visible }"
+                    class="dropdown-list"
+                  >
+                    <span v-if="!this.$store.state.token" class="navbar-span">
+                      <div class="navbar-item">
+                        <router-link to="/login">Logowanie</router-link>
+                      </div>
+                      <div class="navbar-item">
+                        <router-link to="/register">Rejestracja</router-link>
+                      </div>
+                    </span>
+                    <span v-if="this.$store.state.token" class="navbar-span">
+                      <div class="navbar-item">
+                        <router-link to="/recipes/addRecipe"
+                          >Dodaj Przepis</router-link
+                        >
+                      </div>
+                      <div class="navbar-item">
+                        <router-link to="/recipes/myRecipes"
+                          >Moje przepisy</router-link
+                        >
+                      </div>
+                      <div class="navbar-item">
+                        <router-link to="/recipes/favouriteRecipes">
+                          Ulubione przepisy
+                        </router-link>
+                      </div>
+                      <div class="navbar-item">
+                        <router-link to="/" v-on:click="logout()"
+                          >Wyloguj</router-link
+                        >
+                      </div>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -200,9 +202,6 @@ export default {
     isShoppingListEmpty() {
       return this.$store.state.shoppingList.length == 0;
     },
-    checkWidth() {
-      return window.innerWidth >= 1000;
-    },
   },
 };
 </script>
@@ -241,18 +240,21 @@ html {
     height: 100%;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
   }
   .navbar-left {
-    @media (max-width: 500px) {
-      width: 40%;
-    }
     width: 85%;
+    @media (max-width: 500px) {
+      width: 80%;
+    }
     height: 100%;
     display: flex;
     flex-direction: row;
     .navbar-item {
       width: 10%;
+      @media (max-width: 500px) {
+        width: 15%;
+        min-width: 70px;
+      }
     }
   }
   .dropdown-div {
@@ -277,6 +279,9 @@ html {
   background-color: $navbar-background-color;
   display: block;
   min-width: 80px;
+  @media (max-width: 500px) {
+    min-width: 30px;
+  }
   a {
     display: flex;
     font-weight: bolder;
@@ -308,6 +313,9 @@ html {
   display: flex;
   flex-direction: row;
   width: 40%;
+  @media (max-width: 500px) {
+    width: 50%;
+  }
   height: 100%;
   justify-content: center;
   align-items: center;
@@ -318,6 +326,10 @@ html {
     width: 90%;
     height: 60%;
     padding-left: 10px;
+    font-size: 1.2vw;
+    @media (max-width: 500px) {
+      font-size: 2.5vw;
+    }
   }
   .search-field:focus {
     outline: none;
@@ -331,6 +343,15 @@ html {
   .search-button:hover {
     background-color: white;
     color: $navbar-background-color;
+  }
+}
+.navbar-right {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  width: 15%;
+  @media (max-width: 500px) {
+    width: 20%;
   }
 }
 .hidden {
@@ -361,6 +382,7 @@ html {
     }
     .dropdown-list {
       width: 200%;
+      min-width: 150px;
       position: absolute;
       right: 0;
     }
@@ -372,6 +394,10 @@ html {
     text-align: left;
     padding-left: 5%;
   }
+}
+.shoppinglist-dropdown:hover,
+.user-dropdown:hover {
+  cursor: pointer;
 }
 .shoppinglist-dropdown {
   width: 100%;
@@ -395,6 +421,7 @@ html {
     }
     .dropdown-list {
       width: 300%;
+      min-width: 200px;
       position: absolute;
       right: 0;
       background-color: #fff;

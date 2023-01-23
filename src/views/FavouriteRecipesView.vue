@@ -6,6 +6,7 @@
         :key="item.recipeId"
         :recipeName="item.name"
         :recipeId="item.recipeId"
+        :favourite="true"
       />
       <div v-if="recipes.length === 0">
         <h1>Brak ulubionych przepisów</h1>

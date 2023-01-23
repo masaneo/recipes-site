@@ -1,10 +1,29 @@
 <template>
-  <div class="recipe" v-on:click="showRecipe()">
-    <div>
-      <img width="150" height="100" :src="this.image" alt="Image Not Loaded" />
+  <div class="recipe">
+    <div @click="showRecipe()">
+      <img width="200" height="150" :src="this.image" alt="Image Not Loaded" />
     </div>
-    <div class="recipe-name">
+    <div class="recipe-name" v-if="!favourite && !owner" @click="showRecipe()">
       {{ capitalized(recipeName) }}
+    </div>
+    <div v-if="favourite" class="favourite-recipe-name-row">
+      <div class="recipe-name" @click="showRecipe()">
+        {{ capitalized(recipeName) }}
+      </div>
+      <div
+        class="add-ingredients-icon"
+        @click="addIngredientsToShoppingList(recipeId)"
+      >
+        <i class="fas fa-pen-to-square"></i>
+      </div>
+    </div>
+    <div v-if="owner" class="owner-recipe-name-row">
+      <div class="recipe-name" @click="showRecipe()">
+        {{ capitalized(recipeName) }}
+      </div>
+      <div class="edit-recipe-icon" @click="test">
+        <i class="fas fa-wrench"></i>
+      </div>
     </div>
   </div>
 </template>
@@ -17,10 +36,13 @@ export default {
   props: {
     recipeName: String,
     recipeId: Number,
+    favourite: Boolean,
+    owner: Boolean,
   },
   data() {
     return {
       image: "",
+      ingredientList: [],
     };
   },
   mounted() {
@@ -47,6 +69,37 @@ export default {
       const rest = text.slice(1);
 
       return firstLetter + rest;
+    },
+    addIngredientsToShoppingList(id) {
+      axios
+        .get(
+          process.env.VUE_APP_API_BASEURL + "recipes/getIngredientsByRecipeId",
+          {
+            params: {
+              recipeId: id,
+            },
+          }
+        )
+        .then((response) => {
+          this.addAllToShoppingList(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    addToShoppingList(it) {
+      const newItem = {
+        ingredientId: it.ingredientId,
+        name: it.name,
+        unit: it.unit,
+        amount: it.amount,
+      };
+      this.$store.commit("addToShoppingList", newItem);
+    },
+    addAllToShoppingList(items) {
+      items.forEach((item) => {
+        this.addToShoppingList(item);
+      });
     },
   },
 };

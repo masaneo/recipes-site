@@ -37,7 +37,6 @@
         v-for="ingredient in ingredients"
         :key="ingredient.id"
         :id="ingredient.id"
-        @change.once="addIngredient"
         @change="ingredients[ingredient.id].required = true"
       >
         <v-text-field
@@ -46,6 +45,7 @@
           label="Podaj składnik"
           v-model="ingredientModels[ingredient.id].ingredient"
           hide-details="auto"
+          @update:modelValue.once="addIngredient"
           :rules="rules"
         />
         <v-text-field
@@ -83,7 +83,7 @@
             class="cooking-step-textarea"
             v-model="stepModels[step.id].step"
             :label="'Krok ' + (step.id + 1)"
-            @change.once="addStep"
+            @update:modelValue.once="addStep"
             hide-details="auto"
           ></v-textarea>
           <v-btn

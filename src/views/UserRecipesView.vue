@@ -6,6 +6,7 @@
         :key="item.recipeId"
         :recipeName="item.name"
         :recipeId="item.recipeId"
+        :owner="true"
       />
     </div>
   </div>
