@@ -1,5 +1,5 @@
 <template>
-  <div v-if="dataReady" class="container">
+  <div v-if="dataReady" class="container-recipes rec-content-container">
     <div class="title-row">
       <h1>{{ capitalized(recipe.recipe.name) }}</h1>
     </div>
@@ -237,7 +237,7 @@ export default {
 
 <style scoped lang="scss">
 @import "@/assets/styles/recipe-view.sass";
-.container {
+.container-recipes {
   background-image: url("~@/assets/images/bg-board.jpg");
 }
 </style>

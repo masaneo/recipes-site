@@ -1,6 +1,6 @@
 <template>
-  <div class="add-recipe-container">
-    <div v-if="stage >= 1" class="title-div" @change.once="stage++">
+  <div class="add-recipe-container" v-if="showData">
+    <div class="title-div">
       <v-text-field
         label="Nazwa przepisu"
         v-model="recipeName"
@@ -17,7 +17,7 @@
         hide-details="auto"
       />
     </div>
-    <div class="category-div" v-if="stage >= 2">
+    <div class="category-div">
       <v-select
         v-for="cat in categories"
         :key="cat.id"
@@ -26,18 +26,16 @@
         item-value="categoryId"
         label="Wybierz kategorię"
         v-model="categoryModels[cat.id].categoryId"
-        @update:modelValue.once="stage++"
         hide-details="auto"
       >
       </v-select>
     </div>
-    <div class="ingredients" v-if="stage >= 3" @change.once="stage++">
+    <div class="ingredients">
       <div
         class="ingredient-row"
         v-for="ingredient in ingredients"
         :key="ingredient.id"
         :id="ingredient.id"
-        @change="ingredients[ingredient.id].required = true"
       >
         <v-text-field
           class="ingredient-field"
@@ -46,7 +44,6 @@
           v-model="ingredientModels[ingredient.id].ingredient"
           hide-details="auto"
           @update:modelValue.once="addIngredient"
-          :rules="rules"
         />
         <v-text-field
           class="amount-field"
@@ -55,7 +52,6 @@
           v-model="ingredientModels[ingredient.id].quantity"
           label="Podaj ilość"
           hide-details="auto"
-          :rules="rules"
         />
         <v-select
           class="unit-field"
@@ -65,7 +61,6 @@
           item-value="id"
           label="Wybierz jednostkę miary"
           hide-details="auto"
-          :rules="rules"
         >
         </v-select>
         <v-btn
@@ -78,7 +73,7 @@
         </v-btn>
       </div>
     </div>
-    <div class="cooking-steps" v-if="stage >= 4" @change.once="stage++">
+    <div class="cooking-steps" @change.once="stage++">
       <div class="cooking-step-row" v-for="step in steps" :key="step.id">
         <v-textarea
           class="cooking-step-textarea"
@@ -98,41 +93,114 @@
         </v-btn>
       </div>
     </div>
-    <v-btn color="success" v-if="stage >= 5" type="submit" @click="sendRecipe">
-      Dodaj przepis
+    <v-btn color="success" type="submit" @click="saveRecipe">
+      Zapisz zmiany
     </v-btn>
   </div>
 </template>
-
 <script>
-// @ is an alias to /src
-//import AddIngredientToRecipe from "@/components/AddIngredientToRecipe.vue";
 import axios from "axios";
 import router from "@/router";
 
 export default {
-  name: "AddRecipeView",
-  components: {},
   data() {
     return {
-      recipeName: "",
-      userId: Number,
-      stage: 1,
+      showData: false,
+      recipe: [],
+      units: [],
+      categoryList: [],
+      categories: [{ id: 0, name: "div0" }],
+      categoryModels: [],
+      ingredients: [],
+      ingredientModels: [],
+      steps: [],
+      stepModels: [],
       index: 1,
       stepIndex: 1,
       categoryIndex: 1,
-      ingredients: [{ id: 0, name: "div0", required: false }],
-      steps: [{ id: 0, name: "div0" }],
-      categories: [{ id: 0, name: "div0" }],
-      passedData: [],
-      ingredientModels: [{ ingredient: "", quantity: "", unit: "" }],
-      stepModels: [{ step: "" }],
-      categoryModels: [{ categoryId: "" }],
-      categoryList: [],
-      units: "",
+      recipeName: "",
       image: "",
-      value: null,
     };
+  },
+  async mounted() {
+    // check if logged in otherwise redirect to home page
+    if (!this.$store.state.token) {
+      await router.push("/");
+    }
+    // get recipe data
+    await axios
+      .get(process.env.VUE_APP_API_BASEURL + "recipes/getRecipeData", {
+        params: {
+          id: this.$route.params.id,
+          token: this.$store.state.token,
+        },
+      })
+      .then((res) => {
+        if (res.data.name !== null) {
+          this.showData = true;
+          this.recipe = res.data;
+          this.recipeName = res.data.recipe.name;
+          this.categoryModels.push({
+            categoryId: res.data.category.categoryId,
+          });
+          res.data.ingredients.forEach((i) => {
+            this.ingredients.push({
+              id: i.ingredientId,
+              name: "div" + i.ingredientId,
+              required: true,
+            });
+            this.ingredientModels[i.ingredientId] = {
+              id: i.ingredientId,
+              ingredient: i.name,
+              unit: i.unit,
+              quantity: i.amount,
+            };
+            this.index = i.ingredientId + 1;
+          });
+          res.data.cookingSteps.forEach((i) => {
+            this.steps.push({
+              id: i.stepId,
+              name: "div" + i.stepId,
+              required: true,
+            });
+            this.stepModels.push({
+              id: i.stepId,
+              step: i.step,
+            });
+            this.stepIndex = i.stepId + 1;
+          });
+          this.addIngredient();
+          this.addStep();
+        } else {
+          this.showData = false;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    // get all units from api
+    axios
+      .get(process.env.VUE_APP_API_BASEURL + "recipes/units/getAllUnits")
+      .then((response) => {
+        if (response.data.units) {
+          this.units = response.data.units;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    axios
+      .get(
+        process.env.VUE_APP_API_BASEURL + "recipes/categories/getAllCategories"
+      )
+      .then((response) => {
+        if (response.data.categories) {
+          this.categoryList = response.data.categories;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
   methods: {
     addIngredient() {
@@ -141,8 +209,11 @@ export default {
         name: "div" + this.index,
         required: false,
       });
-      this.ingredientModels.push({ ingredient: "", quantity: "", unit: "" });
-      console.log(this.index);
+      this.ingredientModels[this.index] = {
+        ingredient: "",
+        quantity: "",
+        unit: "",
+      };
       this.index++;
     },
     addStep() {
@@ -185,16 +256,16 @@ export default {
       };
       reader.readAsDataURL(file);
     },
-    sendRecipe() {
+    saveRecipe() {
       axios
-        .post(process.env.VUE_APP_API_BASEURL + "recipes/addRecipe", {
+        .put(process.env.VUE_APP_API_BASEURL + "recipes/modifyRecipe", {
           token: this.$store.state.token,
+          id: this.recipe.recipe.recipeId,
           name: this.recipeName,
           steps: this.stepModels,
           ingredients: this.ingredientModels,
           categories: this.categoryModels,
           image: this.image,
-          test: "test",
         })
         .then((res) => {
           console.log(res);
@@ -202,42 +273,17 @@ export default {
         .catch((error) => {
           console.log(error);
         });
+      // console.log("saving data");
+      // console.log(this.recipeName);
+      // console.log(this.recipe.recipe.recipeId);
+      // console.log(this.stepModels);
+      // console.log(this.ingredientModels);
+      // console.log(this.categoryModels);
+      // console.log(this.image);
     },
-  },
-  mounted() {
-    // check if logged in otherwise redirect to home page
-    if (!this.$store.state.token) {
-      router.push("/");
-    }
-    // get all units from api
-    axios
-      .get(process.env.VUE_APP_API_BASEURL + "recipes/units/getAllUnits")
-      .then((response) => {
-        if (response.data.units) {
-          this.units = response.data.units;
-          console.log(this.units);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    // get all categories from api
-    axios
-      .get(
-        process.env.VUE_APP_API_BASEURL + "recipes/categories/getAllCategories"
-      )
-      .then((response) => {
-        if (response.data.categories) {
-          this.categoryList = response.data.categories;
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   },
 };
 </script>
-
 <style scoped lang="scss">
 @import "@/assets/styles/add-recipe-view.sass";
 </style>

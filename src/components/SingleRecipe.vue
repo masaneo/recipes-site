@@ -1,7 +1,7 @@
 <template>
   <div class="recipe">
     <div @click="showRecipe()">
-      <img width="200" height="150" :src="this.image" alt="Image Not Loaded" />
+      <img width="180" height="130" :src="this.image" alt="Image Not Loaded" />
     </div>
     <div class="recipe-name" v-if="!favourite && !owner" @click="showRecipe()">
       {{ capitalized(recipeName) }}
@@ -21,7 +21,7 @@
       <div class="recipe-name" @click="showRecipe()">
         {{ capitalized(recipeName) }}
       </div>
-      <div class="edit-recipe-icon" @click="test">
+      <div class="edit-recipe-icon" @click="editRecipe(recipeId)">
         <i class="fas fa-wrench"></i>
       </div>
     </div>
@@ -100,6 +100,9 @@ export default {
       items.forEach((item) => {
         this.addToShoppingList(item);
       });
+    },
+    editRecipe(id) {
+      router.push({ name: "EditRecipe", params: { id: id } });
     },
   },
 };

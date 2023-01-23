@@ -8,6 +8,7 @@ import UserRecipesView from "@/views/UserRecipesView";
 import FavouriteRecipesView from "@/views/FavouriteRecipesView";
 import RecipesRankingView from "@/views/RecipesRankingView";
 import FindRecipeView from "@/views/FindRecipeView";
+import EditRecipeView from "@/views/EditRecipeView";
 
 const routes = [
   {
@@ -63,6 +64,11 @@ const routes = [
     path: "/recipes/findRecipe",
     name: "FindRecipe",
     component: FindRecipeView,
+  },
+  {
+    path: "/recipes/editRecipe/:id",
+    name: "EditRecipe",
+    component: EditRecipeView,
   },
 ];
 
