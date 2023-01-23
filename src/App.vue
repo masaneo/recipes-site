@@ -5,12 +5,12 @@
         <nav>
           <div class="navbar-left">
             <div class="navbar-item">
-              <router-link to="/">Home</router-link>
+              <router-link to="/">Przepisowo</router-link>
             </div>
             <div class="navbar-item">
               <router-link to="/recipes/ranking">Ranking</router-link>
             </div>
-            <div class="navbar-search">
+            <div class="navbar-search" :class="{ hidden: !checkWidth }">
               <input
                 placeholder="Wyszukaj przepis"
                 v-model="searchRecipe"
@@ -21,6 +21,11 @@
                 <i class="fas fa-search"></i>
               </button>
             </div>
+          </div>
+          <div class="navbar-item">
+            <router-link to="/recipes/findRecipe">
+              <i class="fas fa-question"></i>
+            </router-link>
           </div>
           <div class="dropdown-div navbar-item">
             <div class="shoppinglist-dropdown">
@@ -156,12 +161,9 @@ export default {
     },
     resetShoppingList() {
       this.$store.commit("clearShoppingList");
-      console.log("Clearing shopping list...");
-      console.log(this.$store.state.shoppingList);
     },
     removeFromShoppingList(index) {
       this.$store.commit("removeFromShoppingList", index);
-      console.log("Removing from shopping list...");
     },
     printShoppingList() {
       let stylesHtml = "";
@@ -196,8 +198,10 @@ export default {
   },
   computed: {
     isShoppingListEmpty() {
-      console.log(this.$store.state.shoppingList.length);
       return this.$store.state.shoppingList.length == 0;
+    },
+    checkWidth() {
+      return window.innerWidth >= 1000;
     },
   },
 };
@@ -240,7 +244,10 @@ html {
     justify-content: space-between;
   }
   .navbar-left {
-    width: 90%;
+    @media (max-width: 500px) {
+      width: 40%;
+    }
+    width: 85%;
     height: 100%;
     display: flex;
     flex-direction: row;
@@ -249,7 +256,7 @@ html {
     }
   }
   .dropdown-div {
-    width: 10%;
+    width: 5%;
     height: 100%;
     color: #fff;
   }
@@ -269,11 +276,14 @@ html {
 .navbar-item {
   background-color: $navbar-background-color;
   display: block;
-  min-width: 130px;
+  min-width: 80px;
   a {
     display: flex;
     font-weight: bolder;
-    font-size: 1.2em;
+    @media (max-width: 500px) {
+      font-size: 3vw;
+    }
+    font-size: 1.2vw;
     text-decoration: none;
     height: 100%;
     justify-content: center;
@@ -342,12 +352,15 @@ html {
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 1.2em;
+      @media (max-width: 500px) {
+        font-size: 3vw;
+      }
+      font-size: 1.2vw;
       width: 100%;
       height: 100%;
     }
     .dropdown-list {
-      width: 150%;
+      width: 200%;
       position: absolute;
       right: 0;
     }
@@ -373,12 +386,15 @@ html {
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 1.2em;
+      @media (max-width: 500px) {
+        font-size: 3vw;
+      }
+      font-size: 1.2vw;
       width: 100%;
       height: 100%;
     }
     .dropdown-list {
-      width: 200%;
+      width: 300%;
       position: absolute;
       right: 0;
       background-color: #fff;

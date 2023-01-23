@@ -7,6 +7,7 @@
       <div class="first-column">
         <div class="img-div"><img :src="recipe.image" alt="NotFound" /></div>
         <div class="first-column-features">
+          <div class="author-div">Autor: {{ recipe.author.username }}</div>
           <div class="rating">
             <div>
               <span>Twoja ocena</span>
@@ -21,6 +22,8 @@
             <div>
               <span id="avg-vote">Średnia ocena: {{ this.averageVote }}</span>
             </div>
+          </div>
+          <div class="button-div">
             <v-btn
               v-if="!favouriteState"
               color="success"

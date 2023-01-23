@@ -38,7 +38,8 @@ $ingredient-border: solid green 2px
       justify-content: space-around
       align-items: center
       width: 45%
-      height: auto
+      height: 80%
+      min-height: 50%
       background-color: #FFFFFF
       border-radius: 25px
       opacity: $ingredient-opacity
@@ -56,17 +57,31 @@ $ingredient-border: solid green 2px
           height: 100%
       .first-column-features
         width: 100%
-        height: 40%
+        height: auto
         display: flex
         flex-direction: column
+        gap: 15%
         flex: 1
+        .author-div
+          width: 100%
+          font-size: 2vh
+          text-align: center
         .rating
           width: 100%
-          height: 100%
+          height: 30%
           display: flex
+          gap: 5%
           flex-direction: column
-          justify-content: space-around
           align-items: center
+          span
+            font-size: 1.4em
+            font-style: italic
+          #avg-vote
+            font-weight: bolder
+        .button-div
+          display: flex
+          width: 100%
+          justify-content: center
           button[type=button]
             width: 60%
             min-width: 200px
@@ -75,11 +90,6 @@ $ingredient-border: solid green 2px
             background-color: #c4c4c4
             border: 0
             cursor: pointer
-          span
-            font-size: 1.4em
-            font-style: italic
-          #avg-vote
-            font-weight: bolder
     .second-column
       width: 45%
       height: 100%
