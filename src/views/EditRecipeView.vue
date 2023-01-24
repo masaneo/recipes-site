@@ -268,6 +268,10 @@ export default {
           image: this.image,
         })
         .then((res) => {
+          router.push({
+            name: "SingleRecipe",
+            params: { id: this.recipe.recipe.recipeId },
+          });
           console.log(res);
         })
         .catch((error) => {
