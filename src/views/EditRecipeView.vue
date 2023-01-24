@@ -1,5 +1,15 @@
 <template>
   <div class="add-recipe-container" v-if="showData">
+    <div class="delete-recipe-div">
+      <v-btn
+        class="ingredient-del-btn"
+        color="error"
+        @click="deleteWholeRecipe"
+        hide-details="auto"
+      >
+        <i class="fa-regular fa-trash-can"></i>
+      </v-btn>
+    </div>
     <div class="title-div">
       <v-text-field
         label="Nazwa przepisu"
@@ -78,7 +88,7 @@
         <v-textarea
           class="cooking-step-textarea"
           v-model="stepModels[step.id].step"
-          :label="'Krok ' + (step.id + 1)"
+          :label="'Krok ' + step.index"
           @update:modelValue.once="addStep"
           hide-details="auto"
         ></v-textarea>
@@ -120,6 +130,7 @@ export default {
       categoryIndex: 1,
       recipeName: "",
       image: "",
+      stepNumber: 1,
     };
   },
   async mounted() {
@@ -161,14 +172,17 @@ export default {
             this.steps.push({
               id: i.stepId,
               name: "div" + i.stepId,
+              index: this.stepNumber,
               required: true,
             });
-            this.stepModels.push({
+            this.stepModels[i.stepId] = {
               id: i.stepId,
               step: i.step,
-            });
+            };
             this.stepIndex = i.stepId + 1;
+            this.stepNumber++;
           });
+          console.log(this.steps);
           this.addIngredient();
           this.addStep();
         } else {
@@ -220,11 +234,13 @@ export default {
       this.steps.push({
         id: this.stepIndex,
         name: "div" + this.stepIndex,
+        index: this.stepNumber,
       });
       this.stepModels.push({
         step: "",
       });
       this.stepIndex++;
+      this.stepNumber++;
     },
     addCategory() {
       this.categories.push({
@@ -235,17 +251,88 @@ export default {
         categoryId: "",
       });
       this.categoryIndex++;
-      if (this.stage === 2) this.stage++;
     },
     deleteIngredientRow(id) {
-      const index = this.ingredients.findIndex((f) => f.id === id);
-      this.ingredients.splice(index, 1);
-      this.ingredientModels[index] = { ingredient: "", quantity: "", unit: "" };
+      if (confirm("Na pewno chcesz usunąć ten wiersz z przepisu?")) {
+        const index = this.ingredients.findIndex((f) => f.id === id);
+        this.ingredients.splice(index, 1);
+        this.ingredientModels[index] = {
+          ingredient: "",
+          quantity: "",
+          unit: "",
+        };
+        axios
+          .delete(
+            process.env.VUE_APP_API_BASEURL +
+              "recipes/editRecipe/deleteIngredient",
+            {
+              data: {
+                token: this.$store.state.token,
+                recipeId: this.recipe.recipe.recipeId,
+                ingredientId: id,
+              },
+            }
+          )
+          .then((response) => {
+            console.log(response.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        console.log("nic nie zrobiono");
+      }
     },
     deleteStepRow(id) {
-      const index = this.steps.findIndex((f) => f.id === id);
-      this.steps.splice(index, 1);
-      this.stepModels[index] = { step: "" };
+      if (confirm("Na pewno chcesz usunąć ten krok z przepisu?")) {
+        const index = this.steps.findIndex((f) => f.id === id);
+        this.steps.splice(index, 1);
+        this.stepModels[index] = { step: "" };
+        axios
+          .delete(
+            process.env.VUE_APP_API_BASEURL + "recipes/editRecipe/deleteStep",
+            {
+              data: {
+                token: this.$store.state.token,
+                recipeId: this.recipe.recipe.recipeId,
+                stepId: id,
+              },
+            }
+          )
+          .then((response) => {
+            console.log(response.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        console.log("Usunięto");
+      } else {
+        console.log("Nic nie zrobionio");
+      }
+    },
+    deleteWholeRecipe() {
+      if (confirm("Jesteś pewien że chcesz usunąć cały przepis?")) {
+        axios
+          .delete(
+            process.env.VUE_APP_API_BASEURL + "recipes/editRecipe/deleteRecipe",
+            {
+              data: {
+                token: this.$store.state.token,
+                recipeId: this.recipe.recipe.recipeId,
+              },
+            }
+          )
+          .then((response) => {
+            console.log(response.data);
+            console.log("usunięto");
+            router.push({ name: "UserRecipes" });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        console.log("Nic nie zrobiono");
+      }
     },
     getPicture() {
       const file = document.querySelector("input[type=file]").files[0];
@@ -277,13 +364,6 @@ export default {
         .catch((error) => {
           console.log(error);
         });
-      // console.log("saving data");
-      // console.log(this.recipeName);
-      // console.log(this.recipe.recipe.recipeId);
-      // console.log(this.stepModels);
-      // console.log(this.ingredientModels);
-      // console.log(this.categoryModels);
-      // console.log(this.image);
     },
   },
 };
