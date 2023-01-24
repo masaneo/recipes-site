@@ -256,7 +256,7 @@ export default {
       if (confirm("Na pewno chcesz usunąć ten wiersz z przepisu?")) {
         const index = this.ingredients.findIndex((f) => f.id === id);
         this.ingredients.splice(index, 1);
-        this.ingredientModels[index] = {
+        this.ingredientModels[id] = {
           ingredient: "",
           quantity: "",
           unit: "",
@@ -301,6 +301,11 @@ export default {
           )
           .then((response) => {
             console.log(response.data);
+            this.steps.forEach((i) => {
+              if (i.index > id) {
+                i.index = i.index - 1;
+              }
+            });
           })
           .catch((error) => {
             console.log(error);

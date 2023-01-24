@@ -7,6 +7,7 @@
           type="text"
           placeholder="Wymień je tutaj"
           v-model="ingredientString"
+          @keyup.enter="sendIngredients"
         />
         <button type="button" @click="sendIngredients">Prześlij</button>
       </div>

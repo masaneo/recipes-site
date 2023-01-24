@@ -119,6 +119,7 @@ export default {
       }
       if (!this.searchText && !this.router.currentRoute.value.query.page) {
         this.curPage = 1;
+        this.getRecipesData(1);
       }
     },
   },

@@ -295,14 +295,12 @@ html {
     align-items: center;
     color: #fff;
     &.router-link-exact-active {
-      background-color: #00ff00;
-      text-shadow: 0.6px 0.6px 0 #000, 0.6px 0.6px 0 #000, -0.6px 0.6px 0 #000,
-        0.6px 0.6px 0 #000;
+      background-color: #0fb400;
     }
   }
 }
 .navbar-item:hover {
-  background-color: #00ff00;
+  background-color: #0fb400;
 }
 .navbar-span {
   .navbar-item {
