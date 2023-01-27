@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="find-recipe-header" v-if="ready">
-      Przepisy które wymagają tych składników
+      Dania które można przyrządzić z tych składników
     </div>
     <div class="recipes-section" v-if="ready">
       <div class="not-found" v-if="recipes.length === 0">

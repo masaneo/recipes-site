@@ -1,6 +1,6 @@
 <template>
   <div class="recipes-container">
-    <div class="recipes">
+    <div class="recipes" v-if="ready">
       <SingleRecipe
         v-for="item in recipes.data"
         :key="item.recipeId"
@@ -8,8 +8,8 @@
         :recipeId="item.recipeId"
         :favourite="true"
       />
-      <div v-if="recipes.length === 0">
-        <h1>Brak ulubionych przepisów</h1>
+      <div class="header" v-if="recipes.data.length === 0">
+        Brak ulubionych przepisów
       </div>
     </div>
     <vue-awesome-paginate
@@ -39,6 +39,7 @@ export default {
   },
   data: function () {
     return {
+      ready: false,
       recipes: [],
       curPage: 1,
       links: [],
@@ -59,6 +60,7 @@ export default {
           },
         })
         .then((response) => {
+          this.ready = true;
           this.recipes = response.data;
           this.links = response.data.links;
         })
@@ -75,9 +77,9 @@ export default {
         },
       })
       .then((res) => {
+        this.ready = true;
         this.recipes = res.data;
         this.links = res.data.links;
-        console.log(res);
       });
   },
 };

@@ -1,6 +1,9 @@
 <template>
   <div class="recipes-container">
-    <div class="recipes">
+    <div class="recipes" v-if="ready">
+      <div class="header" v-if="recipes.data.length === 0">
+        Nie dodano jeszcze żadnego przepisu
+      </div>
       <SingleRecipe
         v-for="item in recipes.data"
         :key="item.recipeId"
@@ -36,7 +39,8 @@ export default {
   },
   data: function () {
     return {
-      recipes: "",
+      ready: false,
+      recipes: [],
       curPage: 1,
       links: [],
     };
@@ -47,14 +51,15 @@ export default {
       this.getRecipesData(page);
       this.curPage = page;
     },
-    getRecipesData(page) {
-      axios
+    async getRecipesData(page) {
+      await axios
         .get(this.links[page].url, {
           params: {
             token: this.$store.state.token,
           },
         })
         .then((response) => {
+          this.ready = true;
           this.recipes = response.data;
           this.links = response.data.links;
         })
@@ -75,6 +80,7 @@ export default {
         },
       })
       .then((res) => {
+        this.ready = true;
         this.recipes = res.data;
         this.links = res.data.links;
       });
