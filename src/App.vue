@@ -100,7 +100,7 @@
                     <span v-if="this.$store.state.token" class="navbar-span">
                       <div class="navbar-item">
                         <router-link to="/recipes/addRecipe"
-                          >Dodaj Przepis</router-link
+                          >Dodaj przepis</router-link
                         >
                       </div>
                       <div class="navbar-item">
@@ -379,10 +379,20 @@ html {
       height: 100%;
     }
     .dropdown-list {
-      width: 200%;
+      width: 10vw;
       min-width: 150px;
       position: absolute;
       right: 0;
+      .navbar-span {
+        .navbar-item {
+          a {
+            font-size: 1.1vw;
+            @media (max-width: 500px) {
+              font-size: 4vw;
+            }
+          }
+        }
+      }
     }
   }
   a {
@@ -429,7 +439,10 @@ html {
       border-left: 2px solid green;
       border-right: 2px solid green;
       .shopping-header {
-        font-size: 1.4em;
+        font-size: 1.2vw;
+        @media (max-width: 500px) {
+          font-size: 4vw;
+        }
         font-weight: bold;
         width: 100%;
         display: flex;
@@ -446,6 +459,13 @@ html {
           display: flex;
           justify-content: flex-start;
           align-items: center;
+          font-size: 0.9vw;
+          @media (max-width: 1000px) {
+            font-size: 1vw;
+          }
+          @media (max-width: 500px) {
+            font-size: 2.5vw;
+          }
           gap: 5%;
           width: 100%;
         }
