@@ -1,5 +1,9 @@
 <template>
   <div class="recipes-container">
+    <div class="header" v-if="!isSearching">Przepisy naszych użytkowników</div>
+    <div class="header" v-if="isSearching">
+      Wyszukujesz: {{ this.router.currentRoute.value.query.search }}
+    </div>
     <div class="recipes">
       <SingleRecipe
         v-for="item in recipes.data"
@@ -7,6 +11,9 @@
         :recipeName="item.name"
         :recipeId="item.recipeId"
       />
+      <div class="not-found" v-if="recipes.total === 0">
+        Nie znaleziono żadnych przepisów
+      </div>
     </div>
     <vue-awesome-paginate
       :total-items="recipes.total"
@@ -14,6 +21,8 @@
       :max-pages-shown="5"
       :on-click="changePageHandler"
       v-model="curPage"
+      v-if="recipes.total !== 0"
+      class="paginate-bar"
     />
   </div>
 </template>
@@ -49,7 +58,6 @@ export default {
       }
       this.getRecipesData(page);
       this.curPage = page;
-      console.log("page change");
     },
     getRecipesData(page) {
       axios
@@ -58,9 +66,6 @@ export default {
         })
         .then((response) => {
           this.recipes = response.data;
-          console.log(this.recipes);
-          console.log("dupa");
-          console.log(page);
         })
         .catch((error) => {
           console.log(error);
@@ -74,10 +79,20 @@ export default {
         .then((response) => {
           this.recipes = response.data;
           this.links = response.data.links;
-          console.log(this.recipes);
-          console.log("testing");
-          console.log(response);
-          console.log(this.links);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    async getRecipesSearch(searchText) {
+      await axios
+        .get(process.env.VUE_APP_API_BASEURL + "recipes/searchRecipes", {
+          params: { searchString: searchText },
+        })
+        .then((response) => {
+          this.recipes = response.data;
+          this.links = response.data.links;
+          this.curPage = 1;
         })
         .catch((error) => {
           console.log(error);
@@ -88,7 +103,11 @@ export default {
     this.curPage = router.currentRoute.value.query.page
       ? parseInt(router.currentRoute.value.query.page)
       : 1;
-    this.getAllRecipes(this.curPage);
+    if (!this.isSearching) {
+      this.getAllRecipes(this.curPage);
+    } else if (this.isSearching) {
+      this.getRecipesSearch(router.currentRoute.value.query.search);
+    }
   },
   watch: {
     async $route() {
@@ -99,21 +118,7 @@ export default {
         this.searchText &&
         !this.router.currentRoute.value.query.page
       ) {
-        await axios
-          .get(process.env.VUE_APP_API_BASEURL + "recipes/searchRecipes", {
-            params: { searchString: this.searchText },
-          })
-          .then((response) => {
-            this.recipes = response.data;
-            this.links = response.data.links;
-            this.curPage = 1;
-            console.log("xd");
-            console.log(this.recipes);
-            console.log(this.links);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        this.getRecipesSearch(this.searchText);
       } else if (this.searchText && this.router.currentRoute.value.query.page) {
         this.getRecipesData(this.curPage);
       }
@@ -121,6 +126,11 @@ export default {
         this.curPage = 1;
         this.getRecipesData(1);
       }
+    },
+  },
+  computed: {
+    isSearching() {
+      return this.router.currentRoute.value.query.search ? true : false;
     },
   },
 };

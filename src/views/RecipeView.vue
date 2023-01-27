@@ -42,6 +42,9 @@
       <div class="second-column">
         <div class="ingredients">
           <span class="title-span">Potrzebne składniki</span>
+          <span class="info-span"
+            >Aby dodać składnik do listy zakupów kliknij ikonkę z lewej</span
+          >
           <div class="ingredient-list">
             <div
               class="ingredient-row"

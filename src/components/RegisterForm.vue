@@ -60,7 +60,7 @@ export default {
       passwordRules: [
         (value) => !!value || "Pole wymagane.",
         (value) =>
-          (value && value.length >= 4) ||
+          (value && value.length >= 8) ||
           "Hasło musi się składać z przynajmniej 8 znaków",
       ],
       repeatedPasswordRules: [
