@@ -9,6 +9,7 @@ import FavouriteRecipesView from "@/views/FavouriteRecipesView";
 import RecipesRankingView from "@/views/RecipesRankingView";
 import FindRecipeView from "@/views/FindRecipeView";
 import EditRecipeView from "@/views/EditRecipeView";
+import RecipesByCategoryView from "@/views/RecipesByCategoryView";
 
 const routes = [
   {
@@ -69,6 +70,11 @@ const routes = [
     path: "/recipes/editRecipe/:id",
     name: "EditRecipe",
     component: EditRecipeView,
+  },
+  {
+    path: "/recipes/categories/:id",
+    name: "RecipesByCategory",
+    component: RecipesByCategoryView,
   },
 ];
 

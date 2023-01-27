@@ -1,11 +1,35 @@
 <template>
   <v-app>
     <v-main>
-      <div class="navbar">
+      <div class="navbar" v-if="!isMobile">
         <nav>
           <div class="navbar-left">
             <div class="navbar-item">
               <router-link to="/">Przepisowo</router-link>
+            </div>
+            <div class="dropdown-div navbar-item">
+              <div class="categorylist-dropdown">
+                <div
+                  class="selector"
+                  @mouseenter="showCategories"
+                  @mouseleave="hideCategories"
+                >
+                  <div class="label">Kategorie</div>
+                  <div
+                    :class="{ hidden: !cvisible, cvisible }"
+                    class="dropdown-list"
+                  >
+                    <div
+                      class="category-item"
+                      v-for="(item, i) in categories"
+                      :key="i"
+                      @click="redirectToCategoryPage(item.categoryId)"
+                    >
+                      {{ capitalized(item.name) }}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="navbar-item">
               <router-link to="/recipes/ranking">Ranking</router-link>
@@ -32,8 +56,8 @@
               <div class="shoppinglist-dropdown">
                 <div
                   class="selector"
-                  @mouseenter="showShopping()"
-                  @mouseleave="hideShopping()"
+                  @mouseenter="showShopping"
+                  @mouseleave="hideShopping"
                   id="print"
                 >
                   <div class="label">
@@ -83,7 +107,7 @@
             </div>
             <div class="dropdown-div navbar-item">
               <div class="user-dropdown">
-                <div class="selector" @mouseenter="show()" @mouseleave="hide()">
+                <div class="selector" @mouseenter="show" @mouseleave="hide">
                   <div class="label"><i class="fas fa-user"></i></div>
                   <div
                     :class="{ hidden: !visible, visible }"
@@ -126,6 +150,159 @@
           </div>
         </nav>
       </div>
+      <div class="navbar navbar-mobile" v-if="isMobile">
+        <nav>
+          <div class="navbar-first-row">
+            <div class="navbar-left">
+              <div class="navbar-item">
+                <router-link to="/">Przepisowo</router-link>
+              </div>
+              <div class="dropdown-div navbar-item">
+                <div class="categorylist-dropdown">
+                  <div
+                    class="selector"
+                    @mouseleave="hideCategories"
+                    @click="toggleCategories"
+                  >
+                    <div class="label">Kategorie</div>
+                    <div
+                      :class="{ hidden: !cvisible, cvisible }"
+                      class="dropdown-list"
+                    >
+                      <div
+                        class="category-item"
+                        v-for="(item, i) in categories"
+                        :key="i"
+                        @click="redirectToCategoryPage(item.categoryId)"
+                      >
+                        {{ capitalized(item.name) }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="navbar-item">
+                <router-link to="/recipes/ranking">Ranking</router-link>
+              </div>
+            </div>
+            <div class="navbar-right">
+              <div class="navbar-item">
+                <router-link to="/recipes/findRecipe">
+                  <i class="fas fa-question"></i>
+                </router-link>
+              </div>
+              <div class="dropdown-div navbar-item">
+                <div class="shoppinglist-dropdown">
+                  <div
+                    class="selector"
+                    @mouseleave="hideShopping"
+                    @click="toggleShopping"
+                    id="print"
+                  >
+                    <div class="label">
+                      <i class="fas fa-pen-to-square"></i>
+                    </div>
+                    <div
+                      :class="{ hidden: !svisible, svisible }"
+                      class="dropdown-list"
+                    >
+                      <div class="shopping-header">
+                        <span>Lista zakupów</span>
+                        <div>
+                          <i
+                            class="fas fa-print shopping-list-icon"
+                            @click="printShoppingList"
+                            v-if="!isShoppingListEmpty"
+                          ></i>
+                          &nbsp;
+                          <i
+                            class="fas fa-times shopping-list-icon"
+                            @click="resetShoppingList"
+                          ></i>
+                        </div>
+                      </div>
+                      <div
+                        v-if="this.$store.state.shoppingList.length == 0"
+                        class="shopping-item"
+                      >
+                        Twoja lista zakupów jest pusta
+                      </div>
+                      <div
+                        class="shopping-item"
+                        v-for="(item, i) in this.$store.state.shoppingList"
+                        :key="i"
+                      >
+                        <div>
+                          <i
+                            class="fas fa-times shopping-list-icon"
+                            @click="removeFromShoppingList(i)"
+                          ></i>
+                          {{ item.amount + " " + item.unit + " " + item.name }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="dropdown-div navbar-item">
+                <div class="user-dropdown">
+                  <div class="selector" @mouseleave="hide" @click="toggle">
+                    <div class="label"><i class="fas fa-user"></i></div>
+                    <div
+                      :class="{ hidden: !visible, visible }"
+                      class="dropdown-list"
+                    >
+                      <span v-if="!this.$store.state.token" class="navbar-span">
+                        <div class="navbar-item">
+                          <router-link to="/login">Logowanie</router-link>
+                        </div>
+                        <div class="navbar-item">
+                          <router-link to="/register">Rejestracja</router-link>
+                        </div>
+                      </span>
+                      <span v-if="this.$store.state.token" class="navbar-span">
+                        <div class="navbar-item">
+                          <router-link to="/recipes/addRecipe"
+                            >Dodaj przepis</router-link
+                          >
+                        </div>
+                        <div class="navbar-item">
+                          <router-link to="/recipes/myRecipes"
+                            >Moje przepisy</router-link
+                          >
+                        </div>
+                        <div class="navbar-item">
+                          <router-link to="/recipes/favouriteRecipes">
+                            Ulubione przepisy
+                          </router-link>
+                        </div>
+                        <div class="navbar-item">
+                          <router-link to="/" v-on:click="logout()"
+                            >Wyloguj</router-link
+                          >
+                        </div>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="navbar-second-row">
+            <div class="navbar-search">
+              <input
+                placeholder="Wyszukaj przepis"
+                v-model="searchRecipe"
+                class="search-field"
+                @keyup.enter="searchForRecipe"
+              />
+              <button class="search-button" @click="searchForRecipe">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+          </div>
+        </nav>
+      </div>
       <div class="container">
         <router-view />
       </div>
@@ -135,6 +312,7 @@
 
 <script>
 import router from "@/router";
+import axios from "axios";
 
 export default {
   name: "App",
@@ -142,7 +320,11 @@ export default {
   data: () => ({
     visible: false,
     svisible: false,
+    cvisible: false,
     searchRecipe: "",
+    categories: [],
+    windowWidth: 0,
+    isMobile: false,
   }),
   methods: {
     logout() {
@@ -155,11 +337,26 @@ export default {
     hide() {
       this.visible = false;
     },
+    toggle() {
+      this.visible = !this.visible;
+    },
     showShopping() {
       this.svisible = true;
     },
     hideShopping() {
       this.svisible = false;
+    },
+    toggleShopping() {
+      this.svisible = !this.svisible;
+    },
+    showCategories() {
+      this.cvisible = true;
+    },
+    hideCategories() {
+      this.cvisible = false;
+    },
+    toggleCategories() {
+      this.cvisible = !this.cvisible;
     },
     resetShoppingList() {
       this.$store.commit("clearShoppingList");
@@ -197,10 +394,52 @@ export default {
       router.push({ path: "/", query: { search: this.searchRecipe } });
       this.searchRecipe = "";
     },
+    capitalized(text) {
+      const firstLetter = text[0].toUpperCase();
+      const rest = text.slice(1);
+
+      return firstLetter + rest;
+    },
+    redirectToCategoryPage(categoryId) {
+      router.push({
+        name: "RecipesByCategory",
+        params: { id: categoryId },
+      });
+      this.hideCategories();
+    },
+    updateWindowWidth() {
+      this.windowWidth = window.innerWidth;
+    },
+  },
+  async mounted() {
+    await axios
+      .get(
+        process.env.VUE_APP_API_BASEURL + "recipes/categories/getAllCategories"
+      )
+      .then((response) => {
+        this.categories = response.data.categories;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    this.updateWindowWidth();
+    window.addEventListener("resize", this.updateWindowWidth);
+  },
+  beforeUnmount() {
+    window.removeEventListener("resize", this.updateWindowWidth);
   },
   computed: {
     isShoppingListEmpty() {
       return this.$store.state.shoppingList.length == 0;
+    },
+  },
+  watch: {
+    windowWidth(newValue) {
+      if (newValue < 800) {
+        this.isMobile = true;
+      } else {
+        this.isMobile = false;
+      }
     },
   },
 };
@@ -224,9 +463,54 @@ html {
 }
 .container {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
   height: 100%;
   padding-top: 40px;
+  @media (max-width: 500px) {
+    padding-top: 80px;
+  }
+}
+.navbar-mobile {
+  min-height: 80px;
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    .navbar-first-row {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      width: 100%;
+      height: 50%;
+      .navbar-item {
+        width: 25%;
+      }
+      .navbar-right {
+        .user-dropdown {
+          .selector {
+            .dropdown-list {
+              .navbar-span {
+                .navbar-item {
+                  width: 100%;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    .navbar-second-row {
+      width: 100%;
+      height: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .navbar-search {
+        width: 80%;
+      }
+    }
+  }
 }
 .navbar {
   width: 100%;
@@ -252,8 +536,8 @@ html {
     .navbar-item {
       width: 10%;
       @media (max-width: 500px) {
-        width: 15%;
-        min-width: 70px;
+        width: auto;
+        min-width: 50px;
       }
     }
   }
@@ -358,6 +642,61 @@ html {
 .visible {
   visibility: visible;
 }
+.categorylist-dropdown {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: pointer;
+  .selector {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+    .label {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bolder;
+      @media (max-width: 500px) {
+        font-size: 3vw;
+      }
+      font-size: 1.2vw;
+      width: 100%;
+      height: 100%;
+    }
+    .dropdown-list {
+      width: 10vw;
+      min-width: 170px;
+      position: absolute;
+      left: 0;
+      .category-item {
+        background-color: $navbar_background-color;
+        font-size: 1.4vw;
+        @media (max-width: 500px) {
+          font-size: 4vw;
+        }
+        padding-left: 5px;
+        padding-right: 5px;
+        a {
+          font-size: 1.1vw;
+          @media (max-width: 500px) {
+            font-size: 4vw;
+          }
+        }
+      }
+      .category-item:hover {
+        background-color: #0fb400;
+      }
+    }
+  }
+  a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-align: left;
+    padding-left: 5%;
+  }
+}
 .user-dropdown {
   width: 100%;
   height: 100%;
@@ -379,7 +718,6 @@ html {
       height: 100%;
     }
     .dropdown-list {
-      width: 10vw;
       min-width: 150px;
       position: absolute;
       right: 0;

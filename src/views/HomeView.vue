@@ -21,7 +21,7 @@
       :max-pages-shown="5"
       :on-click="changePageHandler"
       v-model="curPage"
-      v-if="recipes.total !== 0"
+      v-if="recipes.total > recipes.per_page"
       class="paginate-bar"
     />
   </div>
