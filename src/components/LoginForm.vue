@@ -59,7 +59,6 @@ export default {
             password: this.password,
           })
           .then((response) => {
-            console.log(response);
             if (response.data.token) {
               this.token = response.data.token;
               if (!this.$store.state.token) {

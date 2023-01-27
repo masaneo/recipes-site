@@ -182,7 +182,6 @@ export default {
             this.stepIndex = i.stepId + 1;
             this.stepNumber++;
           });
-          console.log(this.steps);
           this.addIngredient();
           this.addStep();
         } else {

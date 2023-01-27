@@ -93,7 +93,6 @@ export default {
               if (response.data.message) {
                 this.message = response.data.message;
                 this.failed = true;
-                console.log(response.data.message);
               } else {
                 router.push("/login");
                 this.failed = false;

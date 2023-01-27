@@ -139,9 +139,8 @@ export default {
             token: this.$store.state.token,
             recipeId: id,
           })
-          .then((response) => {
+          .then(() => {
             this.favouriteState = true;
-            console.log(response.data.message);
           })
           .catch((error) => {
             console.log(error);
@@ -161,9 +160,8 @@ export default {
             },
           }
         )
-        .then((response) => {
+        .then(() => {
           this.favouriteState = false;
-          console.log(response.data.message);
         })
         .catch((error) => {
           console.log(error);
