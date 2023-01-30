@@ -1,16 +1,16 @@
 <template>
   <div class="recipes-container">
     <div class="recipes" v-if="ready">
-      <div class="header">Twoje ulubione przepisy</div>
+      <div class="header">Ostatnio modyfikowane przepisy</div>
       <div class="header" v-if="recipes.data.length === 0">
-        Brak ulubionych przepisów
+        Nie znaleziono przepisów w bazie
       </div>
       <SingleRecipe
         v-for="item in recipes.data"
         :key="item.recipeId"
         :recipeName="item.name"
         :recipeId="item.recipeId"
-        :favourite="true"
+        :admin="true"
       />
     </div>
     <vue-awesome-paginate
@@ -33,7 +33,7 @@ import axios from "axios";
 import router from "@/router";
 
 export default {
-  name: "FavouriteRecipesView",
+  name: "AdminPanelView",
   components: {
     SingleRecipe,
     VueAwesomePaginate,
@@ -52,18 +52,17 @@ export default {
       this.getRecipesData(page);
       this.curPage = page;
     },
-    getRecipesData(page) {
-      axios
+    async getRecipesData(page) {
+      await axios
         .get(this.links[page].url, {
           params: {
             token: this.$store.state.token,
-            categoryId: this.categoryId,
           },
         })
         .then((response) => {
           this.ready = true;
-          this.recipes = response.data;
-          this.links = response.data.links;
+          this.recipes = response.data.recipes;
+          this.links = response.data.recipes.links;
         })
         .catch((error) => {
           console.log(error);
@@ -71,16 +70,27 @@ export default {
     },
   },
   async mounted() {
+    if (!this.$store.state.token) {
+      await router.push("/");
+    }
+    this.curPage = router.currentRoute.value.query.page
+      ? parseInt(router.currentRoute.value.query.page)
+      : 1;
     await axios
-      .get(process.env.VUE_APP_API_BASEURL + "recipes/getFavouriteRecipes", {
+      .get(process.env.VUE_APP_API_BASEURL + "recipes/admin/getAllRecipes", {
         params: {
           token: this.$store.state.token,
+          page: this.curPage,
         },
       })
       .then((res) => {
         this.ready = true;
-        this.recipes = res.data;
-        this.links = res.data.links;
+        if (res.data.isAdmin !== true) {
+          this.ready = false;
+          router.push("/");
+        }
+        this.recipes = res.data.recipes;
+        this.links = res.data.recipes.links;
       });
   },
 };

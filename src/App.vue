@@ -137,6 +137,11 @@
                           Ulubione przepisy
                         </router-link>
                       </div>
+                      <div class="navbar-item" v-if="admin">
+                        <router-link to="/recipes/adminPanel">
+                          Admin panel
+                        </router-link>
+                      </div>
                       <div class="navbar-item">
                         <router-link to="/" v-on:click="logout()"
                           >Wyloguj</router-link
@@ -276,6 +281,11 @@
                             Ulubione przepisy
                           </router-link>
                         </div>
+                        <div class="navbar-item" v-if="admin">
+                          <router-link to="/recipes/adminPanel">
+                            Admin panel
+                          </router-link>
+                        </div>
                         <div class="navbar-item">
                           <router-link to="/" v-on:click="logout()"
                             >Wyloguj</router-link
@@ -318,6 +328,7 @@ export default {
   name: "App",
 
   data: () => ({
+    admin: false,
     visible: false,
     svisible: false,
     cvisible: false,
@@ -430,10 +441,17 @@ export default {
   },
   computed: {
     isShoppingListEmpty() {
-      return this.$store.state.shoppingList.length == 0;
+      return this.$store.state.shoppingList.length === 0;
     },
   },
   watch: {
+    async $route() {
+      if (sessionStorage.getItem("admin")) {
+        this.admin = sessionStorage.getItem("admin");
+      } else {
+        this.admin = false;
+      }
+    },
     windowWidth(newValue) {
       if (newValue < 800) {
         this.isMobile = true;
@@ -467,7 +485,7 @@ html {
   justify-content: flex-start;
   align-items: center;
   height: 100%;
-  padding-top: 40px;
+  padding-top: 45px;
   @media (max-width: 500px) {
     padding-top: 80px;
   }

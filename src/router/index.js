@@ -10,6 +10,8 @@ import RecipesRankingView from "@/views/RecipesRankingView";
 import FindRecipeView from "@/views/FindRecipeView";
 import EditRecipeView from "@/views/EditRecipeView";
 import RecipesByCategoryView from "@/views/RecipesByCategoryView";
+import AdminPanelView from "@/views/AdminPanelView";
+import AdminModifyView from "@/views/AdminModifyView";
 
 const routes = [
   {
@@ -75,6 +77,16 @@ const routes = [
     path: "/recipes/categories/:id",
     name: "RecipesByCategory",
     component: RecipesByCategoryView,
+  },
+  {
+    path: "/recipes/adminPanel",
+    name: "AdminPanelView",
+    component: AdminPanelView,
+  },
+  {
+    path: "/recipes/adminModifyPanel/:id",
+    name: "AdminModifyView",
+    component: AdminModifyView,
   },
 ];
 

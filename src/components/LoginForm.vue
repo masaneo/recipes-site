@@ -1,6 +1,12 @@
 <template>
   <v-container>
-    <v-form ref="form" v-model="valid" lazy-validation class="user-form">
+    <v-form
+      ref="form"
+      v-model="valid"
+      lazy-validation
+      class="user-form"
+      @keyup.enter="login"
+    >
       <div v-if="failed" class="error-div">{{ message }}</div>
       <v-text-field
         type="text"
@@ -63,6 +69,9 @@ export default {
               this.token = response.data.token;
               if (!this.$store.state.token) {
                 this.$store.commit("setToken", response.data.token);
+                if (response.data.admin === true) {
+                  sessionStorage.setItem("admin", true);
+                }
               }
               this.failed = false;
               this.message = "";

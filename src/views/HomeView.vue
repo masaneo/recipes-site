@@ -1,10 +1,12 @@
 <template>
   <div class="recipes-container">
-    <div class="header" v-if="!isSearching">Przepisy naszych użytkowników</div>
-    <div class="header" v-if="isSearching">
-      Wyszukujesz: {{ this.router.currentRoute.value.query.search }}
-    </div>
     <div class="recipes">
+      <div class="header" v-if="!isSearching">
+        Przepisy naszych użytkowników
+      </div>
+      <div class="header" v-if="isSearching">
+        Wyszukujesz: {{ this.router.currentRoute.value.query.search }}
+      </div>
       <SingleRecipe
         v-for="item in recipes.data"
         :key="item.recipeId"

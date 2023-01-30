@@ -3,7 +3,11 @@
     <div @click="showRecipe()">
       <img width="180" height="130" :src="this.image" alt="Image Not Loaded" />
     </div>
-    <div class="recipe-name" v-if="!favourite && !owner" @click="showRecipe()">
+    <div
+      class="recipe-name"
+      v-if="!favourite && !owner && !admin"
+      @click="showRecipe()"
+    >
       {{ capitalized(recipeName) }}
     </div>
     <div v-if="favourite" class="favourite-recipe-name-row">
@@ -25,6 +29,14 @@
         <i class="fas fa-wrench"></i>
       </div>
     </div>
+    <div v-if="admin" class="admin-recipe-name-row">
+      <div class="recipe-name" @click="showRecipe()">
+        {{ capitalized(recipeName) }}
+      </div>
+      <div class="edit-recipe-icon" @click="adminEditRecipe(recipeId)">
+        <i class="fas fa-wrench"></i>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -38,6 +50,7 @@ export default {
     recipeId: Number,
     favourite: Boolean,
     owner: Boolean,
+    admin: Boolean,
   },
   data() {
     return {
@@ -103,6 +116,9 @@ export default {
     },
     editRecipe(id) {
       router.push({ name: "EditRecipe", params: { id: id } });
+    },
+    adminEditRecipe(id) {
+      router.push({ name: "AdminModifyView", params: { id: id } });
     },
   },
 };

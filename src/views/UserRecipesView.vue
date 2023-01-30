@@ -1,6 +1,7 @@
 <template>
   <div class="recipes-container">
     <div class="recipes" v-if="ready">
+      <div class="header">Twoje przepisy</div>
       <div class="header" v-if="recipes.data.length === 0">
         Nie dodano jeszcze żadnego przepisu
       </div>
