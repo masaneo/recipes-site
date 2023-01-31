@@ -215,7 +215,6 @@ export default {
       .then((response) => {
         if (response.data.units) {
           this.units = response.data.units;
-          console.log(this.units);
         }
       })
       .catch((error) => {

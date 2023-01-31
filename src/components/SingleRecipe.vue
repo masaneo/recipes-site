@@ -33,9 +33,6 @@
       <div class="recipe-name" @click="showRecipe()">
         {{ capitalized(recipeName) }}
       </div>
-      <div class="edit-recipe-icon" @click="adminEditRecipe(recipeId)">
-        <i class="fas fa-wrench"></i>
-      </div>
     </div>
   </div>
 </template>

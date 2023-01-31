@@ -3,8 +3,35 @@
     <div class="title-row">
       <h1>{{ capitalized(recipe.recipe.name) }}</h1>
     </div>
+    <dialog :open="dialog" class="reason-dialog">
+      <div class="top-row">
+        <p>Podaj sugerowane zmiany:</p>
+        <i class="close-dialog" @click="toggleDialog">X</i>
+      </div>
+      <v-textarea
+        class="suggested-changes"
+        v-model="suggestedChanges"
+        label="Sugerowane zmiany"
+        hide-details="auto"
+      ></v-textarea>
+      <div class="bottom-row">
+        <v-btn class="send-button" color="success" @click="sendChangeSuggestion"
+          >Wyślij sugestię</v-btn
+        >
+      </div>
+    </dialog>
     <div class="content">
       <div class="first-column">
+        <div class="control-buttons" v-if="admin">
+          <i
+            class="fas fa-wrench control-button control-message"
+            @click="toggleDialog"
+          ></i>
+          <i
+            class="fa-regular fa-trash-can control-button control-delete"
+            @click="deleteRecipe"
+          ></i>
+        </div>
         <div class="img-div"><img :src="recipe.image" alt="NotFound" /></div>
         <div class="first-column-features">
           <div class="author-div">Autor: {{ recipe.author.username }}</div>
@@ -88,6 +115,7 @@
 import axios from "axios";
 import CookingStep from "@/components/CookingStep";
 import StarRating from "vue-star-rating";
+import router from "@/router";
 
 export default {
   name: "RecipeView",
@@ -101,6 +129,9 @@ export default {
       lastPath: "",
       favouriteState: false,
       averageVote: 0,
+      admin: false,
+      dialog: false,
+      suggestedChanges: "",
     };
   },
   methods: {
@@ -202,9 +233,54 @@ export default {
         this.addToShoppingList(item);
       });
     },
+    deleteRecipe() {
+      if (confirm("Jesteś pewien że chcesz usunąć cały przepis?")) {
+        axios
+          .delete(
+            process.env.VUE_APP_API_BASEURL +
+              "recipes/admin/editRecipe/deleteRecipe",
+            {
+              data: {
+                token: this.$store.state.token,
+                recipeId: this.$route.params.id,
+              },
+            }
+          )
+          .then(() => {
+            router.push({ name: "AdminPanelView" });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    },
+    toggleDialog() {
+      this.dialog = !this.dialog;
+    },
+    sendChangeSuggestion() {
+      axios
+        .post(
+          process.env.VUE_APP_API_BASEURL +
+            "recipes/admin/editRecipe/sendChangeSuggestion",
+          {
+            recipeId: this.$route.params.id,
+            suggestions: this.suggestedChanges,
+            token: this.$store.state.token,
+          }
+        )
+        .then(() => {
+          this.dialog = false;
+          this.suggestedChanges = "";
+        });
+    },
   },
   computed: {},
   async mounted() {
+    if (sessionStorage.getItem("admin")) {
+      this.admin = true;
+    } else {
+      this.admin = false;
+    }
     await axios
       .post(process.env.VUE_APP_API_BASEURL + "recipes/getSingleRecipe", {
         id: this.$route.params.id,
