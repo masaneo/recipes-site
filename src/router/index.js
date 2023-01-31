@@ -12,6 +12,8 @@ import EditRecipeView from "@/views/EditRecipeView";
 import RecipesByCategoryView from "@/views/RecipesByCategoryView";
 import AdminPanelView from "@/views/AdminPanelView";
 import AdminModifyView from "@/views/AdminModifyView";
+import VerificationDetailsView from "@/views/VerificationDetailsView";
+import VerificationView from "@/views/VerificationView";
 
 const routes = [
   {
@@ -87,6 +89,16 @@ const routes = [
     path: "/recipes/adminModifyPanel/:id",
     name: "AdminModifyView",
     component: AdminModifyView,
+  },
+  {
+    path: "/verification/details",
+    name: "VerificationDetailsView",
+    component: VerificationDetailsView,
+  },
+  {
+    path: "/verify",
+    name: "VerificationView",
+    component: VerificationView,
   },
 ];
 

@@ -94,7 +94,10 @@ export default {
                 this.message = response.data.message;
                 this.failed = true;
               } else {
-                router.push("/login");
+                router.push({
+                  path: "/verification/details",
+                  query: { email: this.email },
+                });
                 this.failed = false;
               }
             })
