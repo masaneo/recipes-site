@@ -1,7 +1,7 @@
 <template>
   <div class="content-container">
     <div class="search-section">
-      <h1>Podaj nam jakie składniki posiadasz</h1>
+      <h1>Znajdź przepis na bazie posiadanych składników</h1>
       <div class="details">
         W obecnych czasach, podczas robienia zakupów, często zdarza nam się
         nabywać nadmierne ilości produktów, których w rzeczywistości nie
@@ -11,14 +11,17 @@
         których termin ważności wkrótce wygaśnie, a my z przyjemnością
         znajdziemy dla Ciebie smaczne i praktyczne przepisy kulinarne!
       </div>
-      <div class="search-row">
-        <input
-          type="text"
-          placeholder="Wymień je po przecinku tutaj"
-          v-model="ingredientString"
-          @keyup.enter="sendIngredients"
-        />
-        <button type="button" @click="sendIngredients">Prześlij</button>
+      <div class="search-row-cont">
+        <h3>Podaj nam jakie składniki posiadasz</h3>
+        <div class="search-row">
+          <input
+            type="text"
+            placeholder="Wymień je po przecinku tutaj"
+            v-model="ingredientString"
+            @keyup.enter="sendIngredients"
+          />
+          <button type="button" @click="sendIngredients">Prześlij</button>
+        </div>
       </div>
     </div>
     <div class="find-recipe-header" v-if="ready">

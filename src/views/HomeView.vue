@@ -5,7 +5,10 @@
         Przepisy kulinarne naszych użytkowników
       </div>
       <div class="header" v-if="isSearching">
-        Wyszukujesz: {{ this.router.currentRoute.value.query.search }}
+        Wyszukujesz:
+        <span class="search-text">{{
+          this.router.currentRoute.value.query.search
+        }}</span>
       </div>
       <SingleRecipe
         v-for="item in recipes.data"
@@ -13,8 +16,21 @@
         :recipeName="item.name"
         :recipeId="item.recipeId"
       />
-      <div class="not-found" v-if="recipes.total === 0">
-        Nie znaleziono żadnych przepisów
+      <div class="recipes-not-found" v-if="recipes.total === 0">
+        <div class="details">Nie znaleziono żadnych przepisów</div>
+        <div class="latest-container">
+          <div class="latest-recipes-header">
+            Może zainteresuje Cie jeden z najnowszych przepisów
+          </div>
+          <div class="latest-recipes">
+            <SingleRecipe
+              v-for="item in newRecipes"
+              :key="item.recipeId"
+              :recipeName="item.name"
+              :recipeId="item.recipeId"
+            />
+          </div>
+        </div>
       </div>
     </div>
     <vue-awesome-paginate
@@ -46,6 +62,7 @@ export default {
       curPage: 1,
       searchText: "",
       recipes: "",
+      newRecipes: "",
       links: [],
     };
   },
@@ -110,6 +127,15 @@ export default {
     } else if (this.isSearching) {
       this.getRecipesSearch(router.currentRoute.value.query.search);
     }
+    axios
+      .get(process.env.VUE_APP_API_BASEURL + "recipes/getNewestRecipes")
+      .then((response) => {
+        console.log(response);
+        this.newRecipes = response.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
   watch: {
     async $route() {

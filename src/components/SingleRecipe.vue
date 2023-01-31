@@ -123,4 +123,10 @@ export default {
 
 <style scoped lang="scss">
 @import "@/assets/styles/recipe-box.sass";
+.recipe-name {
+  font-size: 1.2vw;
+  @media (max-width: 500px) {
+    font-size: 4vw;
+  }
+}
 </style>

@@ -53,7 +53,6 @@
           <div class="button-div">
             <v-btn
               v-if="!favouriteState"
-              color="success"
               @click="addToFavourite(this.$route.params.id)"
               >Dodaj do ulubionych</v-btn
             >
@@ -79,7 +78,7 @@
               :key="item.ingredientId"
             >
               <div class="icon-div" @click="addToShoppingList(item)">
-                <i class="fa-regular fa-pen-to-square"></i>
+                <i class="fa-solid fa-plus"></i>
               </div>
               <div class="ingredient-div">
                 {{ item.amount + " " + item.unit + " " + item.name }}

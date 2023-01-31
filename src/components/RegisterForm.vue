@@ -126,7 +126,7 @@ export default {
   display: flex;
   height: 75%;
   flex-direction: column;
-  gap: 2%;
+  gap: 20px;
   .v-btn {
     width: 100%;
   }

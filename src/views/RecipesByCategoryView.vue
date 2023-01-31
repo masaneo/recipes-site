@@ -1,8 +1,11 @@
 <template>
   <div class="recipes-container" v-if="this.ready">
     <div class="recipes">
-      <div class="header">Przepisy z kategorii: {{ this.categoryName }}</div>
-      <div class="header" v-if="this.recipes.data.length === 0">
+      <div class="header">
+        Przepisy z kategorii:
+        <span class="search-text">{{ this.categoryName }}</span>
+      </div>
+      <div class="recipes-not-found" v-if="this.recipes.data.length === 0">
         Nie znaleziono przepisów z tej kategorii
       </div>
       <SingleRecipe

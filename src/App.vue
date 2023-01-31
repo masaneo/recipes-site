@@ -36,7 +36,7 @@
             </div>
             <div class="navbar-search">
               <input
-                placeholder="Wyszukaj przepis"
+                placeholder="Wyszukaj przepis po nazwie"
                 v-model="searchRecipe"
                 class="search-field"
                 @keyup.enter="searchForRecipe"
@@ -49,7 +49,7 @@
           <div class="navbar-right">
             <div class="navbar-item">
               <router-link to="/recipes/findRecipe">
-                <i class="fas fa-question"></i>
+                <i class="fa-solid fa-utensils"></i>
               </router-link>
             </div>
             <div class="dropdown-div navbar-item">
@@ -61,7 +61,7 @@
                   id="print"
                 >
                   <div class="label">
-                    <i class="fas fa-pen-to-square"></i>
+                    <i class="fa-solid fa-cart-plus"></i>
                   </div>
                   <div
                     :class="{ hidden: !svisible, svisible }"
@@ -205,7 +205,7 @@
                     id="print"
                   >
                     <div class="label">
-                      <i class="fas fa-pen-to-square"></i>
+                      <i class="fa-solid fa-cart-plus"></i>
                     </div>
                     <div
                       :class="{ hidden: !svisible, svisible }"
@@ -301,7 +301,7 @@
           <div class="navbar-second-row">
             <div class="navbar-search">
               <input
-                placeholder="Wyszukaj przepis"
+                placeholder="Wyszukaj przepis po nazwie"
                 v-model="searchRecipe"
                 class="search-field"
                 @keyup.enter="searchForRecipe"
@@ -464,7 +464,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-$navbar-background-color: #009100;
+$navbar-background-color: #008500;
 body,
 html {
   width: 100%;
@@ -626,7 +626,7 @@ html {
     width: 90%;
     height: 60%;
     padding-left: 10px;
-    font-size: 1.2vw;
+    font-size: 0.9vw;
     @media (max-width: 500px) {
       font-size: 2.5vw;
     }
@@ -637,12 +637,12 @@ html {
   .search-button {
     width: 10%;
     height: 60%;
-    background-color: $navbar-background-color;
+    background-color: #026002;
     color: white;
   }
   .search-button:hover {
-    background-color: white;
-    color: $navbar-background-color;
+    background-color: #047204;
+    color: white;
   }
 }
 .navbar-right {
@@ -692,12 +692,14 @@ html {
       left: 0;
       .category-item {
         background-color: $navbar_background-color;
-        font-size: 1.2vw;
+        font-size: 1.05vw;
         @media (max-width: 500px) {
           font-size: 4vw;
         }
         padding-left: 5px;
         padding-right: 5px;
+        padding-top: 3px;
+        padding-botton: 3px;
       }
       .category-item:hover {
         background-color: #0fb400;

@@ -16,7 +16,6 @@
         hide-details="auto"
         :rules="emailRules"
       ></v-text-field>
-      <br />
       <v-text-field
         label="Password"
         type="password"
@@ -24,7 +23,7 @@
         v-model="password"
         :rules="passwordRules"
         hide-details="auto"
-      /><br />
+      />
       <v-btn color="success" class="mr-4" @click="login"> Zaloguj </v-btn>
     </v-form>
   </v-container>
@@ -103,7 +102,7 @@ export default {
   display: flex;
   height: 45%;
   flex-direction: column;
-  gap: 2%;
+  gap: 20px;
   .v-btn {
     width: 100%;
   }

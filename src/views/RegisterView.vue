@@ -2,23 +2,33 @@
   <div class="register-container">
     <div class="register-image"></div>
     <div class="register">
+      <h1>Zarejestruj się</h1>
       <div class="details">
-        Zarejetruj się aby uzyskać możliwość dodawania własnych przepisów,
-        <br />
+        Utwórz konto, aby uzyskać możliwość dodawania własnych przepisów,
         oceniania przepisów innych użytkowników oraz dodawania ich do listy
         ulubionych.
       </div>
-      <h1>Zarejestruj się</h1>
       <RegisterForm />
+      <div class="details">
+        Jeżeli posiadasz już konto naciśnij
+        <span class="redirect" @click="redirectToLogin">tutaj</span>, aby się
+        zalogować
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import RegisterForm from "@/components/RegisterForm.vue";
+import router from "@/router";
 export default {
   components: {
     RegisterForm,
+  },
+  methods: {
+    redirectToLogin() {
+      router.push("/login");
+    },
   },
 };
 </script>
