@@ -2,7 +2,7 @@
   <div class="recipes-container">
     <div class="recipes">
       <div class="header" v-if="!isSearching">
-        Przepisy naszych użytkowników
+        Przepisy kulinarne naszych użytkowników
       </div>
       <div class="header" v-if="isSearching">
         Wyszukujesz: {{ this.router.currentRoute.value.query.search }}

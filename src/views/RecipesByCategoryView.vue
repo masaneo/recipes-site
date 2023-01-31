@@ -1,10 +1,10 @@
 <template>
   <div class="recipes-container" v-if="this.ready">
-    <div class="header">Przepisy z kategorii: {{ this.categoryName }}</div>
-    <div class="header" v-if="this.recipes.data.length === 0">
-      Nie znaleziono przepisów z tej kategorii
-    </div>
     <div class="recipes">
+      <div class="header">Przepisy z kategorii: {{ this.categoryName }}</div>
+      <div class="header" v-if="this.recipes.data.length === 0">
+        Nie znaleziono przepisów z tej kategorii
+      </div>
       <SingleRecipe
         v-for="item in recipes.data"
         :key="item.recipeId"

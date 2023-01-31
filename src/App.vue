@@ -678,29 +678,26 @@ html {
       @media (max-width: 500px) {
         font-size: 3vw;
       }
-      font-size: 1.2vw;
+      font-size: 1.1vw;
       width: 100%;
       height: 100%;
     }
     .dropdown-list {
       width: 10vw;
+      @media (max-width: 500px) {
+        min-width: 150px;
+      }
       min-width: 170px;
       position: absolute;
       left: 0;
       .category-item {
         background-color: $navbar_background-color;
-        font-size: 1.4vw;
+        font-size: 1.2vw;
         @media (max-width: 500px) {
           font-size: 4vw;
         }
         padding-left: 5px;
         padding-right: 5px;
-        a {
-          font-size: 1.1vw;
-          @media (max-width: 500px) {
-            font-size: 4vw;
-          }
-        }
       }
       .category-item:hover {
         background-color: #0fb400;
@@ -736,7 +733,10 @@ html {
       height: 100%;
     }
     .dropdown-list {
-      min-width: 150px;
+      @media (max-width: 500px) {
+        min-width: 150px;
+      }
+      min-width: 200px;
       position: absolute;
       right: 0;
       .navbar-span {
@@ -757,6 +757,7 @@ html {
     height: 100%;
     text-align: left;
     padding-left: 5%;
+    padding-right: 5%;
   }
 }
 .shoppinglist-dropdown:hover,

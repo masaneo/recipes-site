@@ -2,6 +2,14 @@
   <div class="content-container">
     <div class="search-section">
       <h1>Podaj nam jakie składniki posiadasz</h1>
+      <div class="details">
+        W dzisiejszych czasach będąc na zakupach często kupujemy za dużo
+        produktów, mimo że często nie potrzebujemy ich w takich ilościach.
+        Problem marnowania się żywności jest czymś powszechnym w naszych czasach
+        dlatego udostępniliśmy tą funkcję, gdzie możesz nam podać składniki
+        jakich masz za dużo albo ich termin ważności się kończy, a my znajdziemy
+        dla Ciebie jakieś przepisy!
+      </div>
       <div class="search-row">
         <input
           type="text"
