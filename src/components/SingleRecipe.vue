@@ -1,7 +1,7 @@
 <template>
   <div class="recipe">
     <div @click="showRecipe()">
-      <img width="180" height="130" :src="this.image" alt="Image Not Loaded" />
+      <img :src="this.image" alt="Image Not Loaded" />
     </div>
     <div
       class="recipe-name"
@@ -18,7 +18,7 @@
         class="add-ingredients-icon"
         @click="addIngredientsToShoppingList(recipeId)"
       >
-        <i class="fas fa-pen-to-square"></i>
+        <i class="fa-solid fa-cart-plus"></i>
       </div>
     </div>
     <div v-if="owner" class="owner-recipe-name-row">
@@ -124,7 +124,7 @@ export default {
 <style scoped lang="scss">
 @import "@/assets/styles/recipe-box.sass";
 .recipe-name {
-  font-size: 1.2vw;
+  font-size: 1vw;
   @media (max-width: 500px) {
     font-size: 4vw;
   }

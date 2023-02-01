@@ -20,7 +20,7 @@
             v-model="ingredientString"
             @keyup.enter="sendIngredients"
           />
-          <button type="button" @click="sendIngredients">Prześlij</button>
+          <button type="button" @click="sendIngredients">Wyszukaj</button>
         </div>
       </div>
     </div>

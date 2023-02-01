@@ -16,7 +16,24 @@
       ></v-textarea>
       <div class="bottom-row">
         <v-btn class="send-button" color="success" @click="sendChangeSuggestion"
-          >Wyślij sugestię</v-btn
+          >Wyślij sugestie</v-btn
+        >
+      </div>
+    </dialog>
+    <dialog :open="showRecipeDialog" class="reason-dialog">
+      <div class="top-row">
+        <p>Podaj sugerowane zmiany:</p>
+        <i class="close-dialog" @click="toggleHideRecipeDialog">X</i>
+      </div>
+      <v-textarea
+        class="suggested-changes"
+        v-model="majorSuggestedChanges"
+        label="Sugerowane zmiany"
+        hide-details="auto"
+      ></v-textarea>
+      <div class="bottom-row">
+        <v-btn class="send-button" color="success" @click="hideRecipe"
+          >Wyślij sugestie i ukryj przepis</v-btn
         >
       </div>
     </dialog>
@@ -29,7 +46,12 @@
           ></i>
           <i
             class="fa-regular fa-trash-can control-button control-delete"
-            @click="deleteRecipe"
+            @click="toggleHideRecipeDialog"
+          ></i>
+          <i
+            class="fa-solid fa-check control-accept control-button"
+            @click="acceptChanges"
+            v-if="isHidden"
           ></i>
         </div>
         <div class="img-div"><img :src="recipe.image" alt="NotFound" /></div>
@@ -130,7 +152,10 @@ export default {
       averageVote: 0,
       admin: false,
       dialog: false,
+      showRecipeDialog: false,
       suggestedChanges: "",
+      majorSuggestedChanges: "",
+      isHidden: false,
     };
   },
   methods: {
@@ -232,8 +257,8 @@ export default {
         this.addToShoppingList(item);
       });
     },
-    deleteRecipe() {
-      if (confirm("Jesteś pewien że chcesz usunąć cały przepis?")) {
+    hideRecipe() {
+      if (confirm("Jesteś pewien że ukryć ten przepis?")) {
         axios
           .delete(
             process.env.VUE_APP_API_BASEURL +
@@ -241,6 +266,7 @@ export default {
             {
               data: {
                 token: this.$store.state.token,
+                suggestions: this.majorSuggestedChanges,
                 recipeId: this.$route.params.id,
               },
             }
@@ -255,6 +281,9 @@ export default {
     },
     toggleDialog() {
       this.dialog = !this.dialog;
+    },
+    toggleHideRecipeDialog() {
+      this.showRecipeDialog = !this.showRecipeDialog;
     },
     sendChangeSuggestion() {
       axios
@@ -272,6 +301,20 @@ export default {
           this.suggestedChanges = "";
         });
     },
+    acceptChanges() {
+      axios
+        .put(
+          process.env.VUE_APP_API_BASEURL +
+            "recipes/admin/editRecipe/acceptChanges",
+          {
+            recipeId: this.$route.params.id,
+            token: this.$store.state.token,
+          }
+        )
+        .then(() => {
+          this.isHidden = !this.isHidden;
+        });
+    },
   },
   computed: {},
   async mounted() {
@@ -287,6 +330,7 @@ export default {
       })
       .then((res) => {
         this.recipe = res.data;
+        this.isHidden = !res.data.recipe.is_visible;
         this.favouriteState = res.data.favourite;
       })
       .catch((error) => {
