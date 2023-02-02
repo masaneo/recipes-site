@@ -7,7 +7,7 @@
         @click="deleteWholeRecipe"
         hide-details="auto"
       >
-        <i class="fa-regular fa-trash-can"></i>
+        Usuń cały przepis
       </v-btn>
     </div>
     <div class="title-div">
