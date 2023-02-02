@@ -193,7 +193,7 @@
             <div class="navbar-right">
               <div class="navbar-item">
                 <router-link to="/recipes/findRecipe">
-                  <i class="fas fa-question"></i>
+                  <i class="fa-solid fa-utensils"></i>
                 </router-link>
               </div>
               <div class="dropdown-div navbar-item">
@@ -486,7 +486,7 @@ html {
   align-items: center;
   height: 100%;
   padding-top: 45px;
-  @media (max-width: 500px) {
+  @media (max-width: 800px) {
     padding-top: 80px;
   }
 }

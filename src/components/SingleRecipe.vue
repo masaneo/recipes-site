@@ -14,11 +14,15 @@
       <div class="recipe-name" @click="showRecipe()">
         {{ capitalized(recipeName) }}
       </div>
-      <div
-        class="add-ingredients-icon"
-        @click="addIngredientsToShoppingList(recipeId)"
-      >
-        <i class="fa-solid fa-cart-plus"></i>
+      <div class="add-ingredients-icon">
+        <!--        <i class="fa-solid fa-cart-plus"></i>-->
+        <input
+          type="checkbox"
+          id="recipeId"
+          :value="recipeId"
+          v-model="checkedRecipe"
+          @click="selected"
+        />
       </div>
     </div>
     <div v-if="owner" class="owner-recipe-name-row">
@@ -45,6 +49,7 @@ export default {
   props: {
     recipeName: String,
     recipeId: Number,
+    checkedList: Array,
     favourite: Boolean,
     owner: Boolean,
     admin: Boolean,
@@ -53,6 +58,7 @@ export default {
     return {
       image: "",
       ingredientList: [],
+      checkedRecipe: false,
     };
   },
   mounted() {
@@ -69,6 +75,12 @@ export default {
       .catch((error) => {
         console.log(error);
       });
+
+    if (typeof this.checkedList !== undefined && this.checkedList) {
+      if (this.checkedList.indexOf(this.recipeId.toString()) !== -1) {
+        this.checkedRecipe = true;
+      }
+    }
   },
   methods: {
     showRecipe() {
@@ -80,42 +92,24 @@ export default {
 
       return firstLetter + rest;
     },
-    addIngredientsToShoppingList(id) {
-      axios
-        .get(
-          process.env.VUE_APP_API_BASEURL + "recipes/getIngredientsByRecipeId",
-          {
-            params: {
-              recipeId: id,
-            },
-          }
-        )
-        .then((response) => {
-          this.addAllToShoppingList(response.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    addToShoppingList(it) {
-      const newItem = {
-        ingredientId: it.ingredientId,
-        name: it.name,
-        unit: it.unit,
-        amount: it.amount,
-      };
-      this.$store.commit("addToShoppingList", newItem);
-    },
-    addAllToShoppingList(items) {
-      items.forEach((item) => {
-        this.addToShoppingList(item);
-      });
-    },
     editRecipe(id) {
       router.push({ name: "EditRecipe", params: { id: id } });
     },
-    adminEditRecipe(id) {
-      router.push({ name: "AdminModifyView", params: { id: id } });
+    selected(evt) {
+      this.$emit("selected", {
+        recipeId: evt.target.value,
+        newSelection: evt.target.checked,
+      });
+    },
+  },
+  watch: {
+    checkedList(newValue) {
+      console.log(newValue);
+      if (typeof newValue !== undefined && newValue) {
+        if (newValue.indexOf(this.recipeId.toString()) === -1) {
+          this.checkedRecipe = false;
+        }
+      }
     },
   },
 };

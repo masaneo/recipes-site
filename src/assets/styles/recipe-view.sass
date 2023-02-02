@@ -1,7 +1,7 @@
 $ingredient-opacity: 0.9
 $ingredient-border: solid green 2px
 .rec-content-container
-  min-height: 100%
+  min-height: 100vh
 .container-recipes
   display: flex
   width: 100%
@@ -164,6 +164,9 @@ $ingredient-border: solid green 2px
             height: auto
             font-size: 1.8vh
             .icon-div
+              display: flex
+              justify-content: center
+              align-items: center
               width: 5%
               cursor: pointer
             .ingredient-div
@@ -189,15 +192,22 @@ $ingredient-border: solid green 2px
         opacity: $ingredient-opacity
         padding-top: 10px
         padding-bottom: 10px
-        .title-span
+        .step-list
+          margin-top: 10px
+          margin-bottom: 5px
           width: 75%
-          text-align: left
-        .step
+          height: auto
           display: flex
-          align-items: flex-start
-          width: 75%
-          text-align: left
-          font-size: 1.8vh
+          flex-direction: column
+          justify-content: center
+          .title-span
+            width: 75%
+            text-align: left
+          .step
+            display: flex
+            align-items: flex-start
+            text-align: left
+            font-size: 1.8vh
 .reason-dialog
   width: 40%
   opacity: 0.9

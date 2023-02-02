@@ -90,37 +90,49 @@
       <div class="second-column">
         <div class="ingredients">
           <span class="title-span">Potrzebne składniki</span>
-          <span class="info-span"
-            >Aby dodać składnik do listy zakupów kliknij ikonkę z lewej</span
-          >
+          <!--          <span class="info-span"-->
+          <!--            >Aby dodać składnik do listy zakupów zaznacz go, a następnie-->
+          <!--            naciśnij przycisk poniżej</span-->
+          <!--          >-->
           <div class="ingredient-list">
             <div
               class="ingredient-row"
               v-for="item in recipe.ingredients"
               :key="item.ingredientId"
             >
-              <div class="icon-div" @click="addToShoppingList(item)">
-                <i class="fa-solid fa-plus"></i>
+              <!--              <div class="icon-div" @click="addToShoppingList(item)">-->
+              <div class="icon-div">
+                <!--                <i class="fa-solid fa-plus"></i>-->
+                <input
+                  type="checkbox"
+                  :id="'ingredient' + item.ingredientId"
+                  :value="item.ingredientId"
+                  v-model="checkedIngredients"
+                />
               </div>
               <div class="ingredient-div">
-                {{ item.amount + " " + item.unit + " " + item.name }}
+                <label :for="'ingredient' + item.ingredientId">
+                  {{ item.amount + " " + item.unit + " " + item.name }}
+                </label>
               </div>
             </div>
             <div class="ingredient-row">
-              <v-btn @click="addAllToShoppingList()"
-                >Dodaj wszystko do listy zakupów</v-btn
+              <v-btn @click="addCheckedToShoppingList()"
+                >Dodaj zaznaczone do listy zakupów</v-btn
               >
             </div>
           </div>
         </div>
         <div class="steps">
           <span class="title-span">Jak przygotować?</span>
-          <CookingStep
-            v-for="item in recipe.cookingSteps"
-            :key="item.stepId"
-            :step="item.step"
-            :step-number="item.stepId"
-          />
+          <div class="step-list">
+            <CookingStep
+              v-for="item in recipe.cookingSteps"
+              :key="item.stepId"
+              :step="item.step"
+              :step-number="item.stepId"
+            />
+          </div>
         </div>
       </div>
       <div v-if="!dataReady && isError">
@@ -156,6 +168,7 @@ export default {
       suggestedChanges: "",
       majorSuggestedChanges: "",
       isHidden: false,
+      checkedIngredients: [],
     };
   },
   methods: {
@@ -251,6 +264,19 @@ export default {
         amount: it.amount,
       };
       this.$store.commit("addToShoppingList", newItem);
+    },
+    addToShoppingListById(id) {
+      var ingredient = this.recipe.ingredients.find((item) => {
+        return item.ingredientId === id;
+      });
+
+      this.addToShoppingList(ingredient);
+    },
+    addCheckedToShoppingList() {
+      this.checkedIngredients.forEach((item) => {
+        this.addToShoppingListById(item);
+      });
+      this.checkedIngredients = [];
     },
     addAllToShoppingList() {
       this.recipe.ingredients.forEach((item) => {
@@ -359,5 +385,6 @@ export default {
 @import "@/assets/styles/recipe-view.sass";
 .container-recipes {
   background-image: url("~@/assets/images/bg-board.jpg");
+  background-size: 100%;
 }
 </style>
