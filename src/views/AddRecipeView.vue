@@ -194,10 +194,12 @@ export default {
           ingredients: this.ingredientModels,
           categories: this.categoryModels,
           image: this.image,
-          test: "test",
         })
         .then((res) => {
-          console.log(res);
+          router.push({
+            name: "SingleRecipe",
+            params: { id: res.data.recipeId },
+          });
         })
         .catch((error) => {
           console.log(error);
