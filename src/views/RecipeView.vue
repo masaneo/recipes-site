@@ -90,19 +90,13 @@
       <div class="second-column">
         <div class="ingredients">
           <span class="title-span">Potrzebne składniki</span>
-          <!--          <span class="info-span"-->
-          <!--            >Aby dodać składnik do listy zakupów zaznacz go, a następnie-->
-          <!--            naciśnij przycisk poniżej</span-->
-          <!--          >-->
           <div class="ingredient-list">
             <div
               class="ingredient-row"
               v-for="item in recipe.ingredients"
               :key="item.ingredientId"
             >
-              <!--              <div class="icon-div" @click="addToShoppingList(item)">-->
               <div class="icon-div">
-                <!--                <i class="fa-solid fa-plus"></i>-->
                 <input
                   type="checkbox"
                   :id="'ingredient' + item.ingredientId"
@@ -116,9 +110,25 @@
                 </label>
               </div>
             </div>
+            <div class="ingredient-row check-all-row">
+              <div class="icon-div">
+                <input
+                  type="checkbox"
+                  id="check-all-checkbox"
+                  :value="true"
+                  v-model="checkAll"
+                  @change="checkAllIngredients"
+                />
+              </div>
+              <div class="ingredient-div">
+                <label for="check-all-checkbox"
+                  >Zaznacz wszystkie składniki</label
+                >
+              </div>
+            </div>
             <div class="ingredient-row">
               <v-btn @click="addCheckedToShoppingList()"
-                >Dodaj zaznaczone do listy zakupów</v-btn
+                >Dodaj składniki do listy zakupów</v-btn
               >
             </div>
           </div>
@@ -169,6 +179,8 @@ export default {
       majorSuggestedChanges: "",
       isHidden: false,
       checkedIngredients: [],
+      checkAll: [],
+      allChecked: false,
     };
   },
   methods: {
@@ -277,6 +289,8 @@ export default {
         this.addToShoppingListById(item);
       });
       this.checkedIngredients = [];
+      this.allChecked = false;
+      this.checkAll = [];
     },
     addAllToShoppingList() {
       this.recipe.ingredients.forEach((item) => {
@@ -341,6 +355,9 @@ export default {
           this.isHidden = !this.isHidden;
         });
     },
+    checkAllIngredients() {
+      this.allChecked = !this.allChecked;
+    },
   },
   computed: {},
   async mounted() {
@@ -377,6 +394,17 @@ export default {
         console.log(error);
       });
     await this.getAverageVote();
+  },
+  watch: {
+    allChecked(newValue) {
+      if (newValue) {
+        this.recipe.ingredients.forEach((ingredient) => {
+          this.checkedIngredients.push(ingredient.ingredientId);
+        });
+      } else {
+        this.checkedIngredients = [];
+      }
+    },
   },
 };
 </script>

@@ -52,7 +52,10 @@
                 <i class="fa-solid fa-utensils"></i>
               </router-link>
             </div>
-            <div class="dropdown-div navbar-item">
+            <div
+              class="dropdown-div navbar-item"
+              @click="redirectToShoppingList"
+            >
               <div class="shoppinglist-dropdown">
                 <div
                   class="selector"
@@ -201,7 +204,10 @@
                   <i class="fa-solid fa-utensils"></i>
                 </router-link>
               </div>
-              <div class="dropdown-div navbar-item">
+              <div
+                class="dropdown-div navbar-item"
+                @click="redirectToShoppingList"
+              >
                 <div class="shoppinglist-dropdown">
                   <div
                     class="selector"
@@ -366,15 +372,15 @@ export default {
     toggle() {
       this.visible = !this.visible;
     },
-    showShopping() {
-      this.svisible = true;
-    },
-    hideShopping() {
-      this.svisible = false;
-    },
-    toggleShopping() {
-      this.svisible = !this.svisible;
-    },
+    // showShopping() {
+    //   this.svisible = true;
+    // },
+    // hideShopping() {
+    //   this.svisible = false;
+    // },
+    // toggleShopping() {
+    //   this.svisible = !this.svisible;
+    // },
     showCategories() {
       this.cvisible = true;
     },
@@ -436,6 +442,9 @@ export default {
     updateWindowWidth() {
       this.windowWidth = window.innerWidth;
     },
+    redirectToShoppingList() {
+      router.push({ name: "ShoppingListView" });
+    },
   },
   async mounted() {
     await axios
@@ -461,9 +470,11 @@ export default {
   },
   watch: {
     async $route() {
-      this.usernameFirstChar = sessionStorage
-        .getItem("username")[0]
-        .toUpperCase();
+      if (sessionStorage.getItem("username")) {
+        this.usernameFirstChar = sessionStorage
+          .getItem("username")[0]
+          .toUpperCase();
+      }
       if (sessionStorage.getItem("admin")) {
         this.admin = sessionStorage.getItem("admin");
       } else {

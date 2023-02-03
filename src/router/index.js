@@ -14,6 +14,7 @@ import AdminPanelView from "@/views/AdminPanelView";
 import AdminModifyView from "@/views/AdminModifyView";
 import VerificationDetailsView from "@/views/VerificationDetailsView";
 import VerificationView from "@/views/VerificationView";
+import ShoppingListView from "@/views/ShoppingListView";
 
 const routes = [
   {
@@ -99,6 +100,11 @@ const routes = [
     path: "/verify",
     name: "VerificationView",
     component: VerificationView,
+  },
+  {
+    path: "/shoppingList",
+    name: "ShoppingListView",
+    component: ShoppingListView,
   },
 ];
 
