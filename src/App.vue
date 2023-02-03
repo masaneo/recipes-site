@@ -108,7 +108,12 @@
             <div class="dropdown-div navbar-item">
               <div class="user-dropdown">
                 <div class="selector" @mouseenter="show" @mouseleave="hide">
-                  <div class="label"><i class="fas fa-user"></i></div>
+                  <div class="label">
+                    <i v-if="!this.$store.state.token" class="fas fa-user"></i>
+                    <div class="user-circle" v-if="this.$store.state.token">
+                      {{ usernameFirstChar }}
+                    </div>
+                  </div>
                   <div
                     :class="{ hidden: !visible, visible }"
                     class="dropdown-list"
@@ -252,7 +257,15 @@
               <div class="dropdown-div navbar-item">
                 <div class="user-dropdown">
                   <div class="selector" @mouseleave="hide" @click="toggle">
-                    <div class="label"><i class="fas fa-user"></i></div>
+                    <div class="label">
+                      <i
+                        v-if="!this.$store.state.token"
+                        class="fas fa-user"
+                      ></i>
+                      <div class="user-circle" v-if="this.$store.state.token">
+                        {{ usernameFirstChar }}
+                      </div>
+                    </div>
                     <div
                       :class="{ hidden: !visible, visible }"
                       class="dropdown-list"
@@ -336,11 +349,13 @@ export default {
     categories: [],
     windowWidth: 0,
     isMobile: false,
+    usernameFirstChar: "",
   }),
   methods: {
     logout() {
       this.$store.state.token = "";
       sessionStorage.clear();
+      this.hide();
     },
     show() {
       this.visible = true;
@@ -446,6 +461,9 @@ export default {
   },
   watch: {
     async $route() {
+      this.usernameFirstChar = sessionStorage
+        .getItem("username")[0]
+        .toUpperCase();
       if (sessionStorage.getItem("admin")) {
         this.admin = sessionStorage.getItem("admin");
       } else {
@@ -835,5 +853,24 @@ html {
 .shopping-list-icon:hover {
   color: green;
   cursor: pointer;
+}
+.user-circle {
+  padding-top: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  font-size: 1vw;
+  @media (max-width: 500px) {
+    padding-top: 1px;
+    font-size: 3.5vw;
+    width: 18px;
+    height: 18px;
+  }
+  color: $navbar-background-color;
+  font-weight: 600;
 }
 </style>

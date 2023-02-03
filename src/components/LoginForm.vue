@@ -66,6 +66,7 @@ export default {
           .then((response) => {
             if (response.data.token) {
               this.token = response.data.token;
+              sessionStorage.setItem("username", response.data.user.username);
               if (!this.$store.state.token) {
                 this.$store.commit("setToken", response.data.token);
                 if (response.data.admin === true) {
