@@ -1,112 +1,120 @@
 <template>
   <div class="add-recipe-container">
-    <div v-if="stage >= 1" class="title-div" @change.once="stage++">
-      <v-text-field
-        label="Nazwa przepisu"
-        v-model="recipeName"
-        class="title-field"
-        hide-details="auto"
-      />
-      <v-file-input
-        label="Zdjęcie potrawy"
-        truncate-length="15"
-        type="file"
-        class="file-input"
-        @change="getPicture(this.file)"
-        accept="image/jpeg, image/png"
-        hide-details="auto"
-      />
-    </div>
-    <div class="category-div" v-if="stage >= 2">
-      <v-select
-        v-for="cat in categories"
-        :key="cat.id"
-        :items="categoryList"
-        item-title="name"
-        item-value="categoryId"
-        label="Wybierz kategorię"
-        v-model="categoryModels[cat.id].categoryId"
-        @update:modelValue.once="stage++"
-        hide-details="auto"
-      >
-      </v-select>
-    </div>
-    <div class="ingredients" v-if="stage >= 3" @change.once="stage++">
-      <div
-        class="ingredient-row"
-        v-for="ingredient in ingredients"
-        :key="ingredient.id"
-        :id="ingredient.id"
-        @change="ingredients[ingredient.id].required = true"
-      >
+    <v-form ref="form" v-model="valid" lazy-validation class="add-recipe-form">
+      <div v-if="stage >= 1" class="title-div" @change.once="stage++">
         <v-text-field
-          class="ingredient-field"
-          type="text"
-          label="Podaj składnik"
-          v-model="ingredientModels[ingredient.id].ingredient"
+          label="Nazwa przepisu"
+          v-model="recipeName"
+          class="title-field"
           hide-details="auto"
-          @update:modelValue.once="addIngredient"
-          :rules="rules"
+          :rules="recipeNameRules"
         />
-        <v-text-field
-          class="amount-field"
-          type="number"
-          min="0"
-          v-model="ingredientModels[ingredient.id].quantity"
-          label="Podaj ilość"
+        <v-file-input
+          label="Zdjęcie potrawy"
+          truncate-length="15"
+          type="file"
+          class="file-input"
+          @change="getPicture(this.file)"
+          accept="image/jpeg, image/png"
           hide-details="auto"
-          :rules="rules"
         />
+      </div>
+      <div class="category-div" v-if="stage >= 2">
         <v-select
-          class="unit-field"
-          v-model="ingredientModels[ingredient.id].unit"
-          :items="units"
+          v-for="cat in categories"
+          :key="cat.id"
+          :items="categoryList"
           item-title="name"
-          item-value="id"
-          label="Wybierz jednostkę miary"
+          item-value="categoryId"
+          label="Wybierz kategorię"
+          v-model="categoryModels[cat.id].categoryId"
+          @update:modelValue.once="stage++"
           hide-details="auto"
-          :rules="rules"
         >
         </v-select>
-        <v-btn
-          class="ingredient-del-btn"
-          color="error"
-          @click="deleteIngredientRow(ingredient.id)"
-          hide-details="auto"
-        >
-          <i class="fa-regular fa-trash-can"></i>
-        </v-btn>
       </div>
-    </div>
-    <div class="cooking-steps" v-if="stage >= 4" @change.once="stage++">
-      <div class="cooking-step-row" v-for="step in steps" :key="step.id">
-        <v-textarea
-          class="cooking-step-textarea"
-          v-model="stepModels[step.id].step"
-          :label="'Krok ' + (step.id + 1)"
-          @update:modelValue.once="addStep"
-          hide-details="auto"
-        ></v-textarea>
-        <v-btn
-          class="cooking-step-del-btn"
-          color="error"
-          type="submit"
-          @click="deleteStepRow(step.id)"
-          hide-details="auto"
+      <div class="ingredients" v-if="stage >= 3" @change.once="stage++">
+        <div
+          class="ingredient-row"
+          v-for="ingredient in ingredients"
+          :key="ingredient.id"
+          :id="ingredient.id"
+          @change="ingredients[ingredient.id].required = true"
         >
-          <i class="fa-regular fa-trash-can"></i>
-        </v-btn>
+          <v-text-field
+            class="ingredient-field"
+            type="text"
+            label="Podaj składnik"
+            v-model="ingredientModels[ingredient.id].ingredient"
+            hide-details="auto"
+            @update:modelValue.once="addIngredient"
+            :rules="ingredientRules"
+          />
+          <v-text-field
+            class="amount-field"
+            type="number"
+            min="0"
+            v-model="ingredientModels[ingredient.id].quantity"
+            label="Podaj ilość"
+            hide-details="auto"
+            :rules="requiredRule"
+          />
+          <v-select
+            class="unit-field"
+            v-model="ingredientModels[ingredient.id].unit"
+            :items="units"
+            item-title="name"
+            item-value="id"
+            label="Wybierz jednostkę miary"
+            hide-details="auto"
+            :rules="requiredRule"
+          >
+          </v-select>
+          <v-btn
+            class="ingredient-del-btn"
+            color="error"
+            @click="deleteIngredientRow(ingredient.id)"
+            hide-details="auto"
+          >
+            <i class="fa-regular fa-trash-can"></i>
+          </v-btn>
+        </div>
       </div>
-    </div>
-    <v-btn color="success" v-if="stage >= 5" type="submit" @click="sendRecipe">
-      Dodaj przepis
-    </v-btn>
+      <div class="cooking-steps" v-if="stage >= 4" @keyup.once="stage++">
+        <div class="cooking-step-row" v-for="step in steps" :key="step.id">
+          <v-textarea
+            class="cooking-step-textarea"
+            v-model="stepModels[step.id].step"
+            :label="'Krok ' + (step.id + 1)"
+            @update:modelValue.once="addStep"
+            hide-details="auto"
+            :rules="stepRules"
+          ></v-textarea>
+          <v-btn
+            class="cooking-step-del-btn"
+            color="error"
+            type="submit"
+            @click="deleteStepRow(step.id)"
+            hide-details="auto"
+          >
+            <i class="fa-regular fa-trash-can"></i>
+          </v-btn>
+        </div>
+      </div>
+      <v-btn
+        color="success"
+        v-if="stage >= 5"
+        type="submit"
+        @click="sendRecipe"
+      >
+        Dodaj przepis
+      </v-btn>
+    </v-form>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-//import AddIngredientToRecipe from "@/components/AddIngredientToRecipe.vue";
 import axios from "axios";
 import router from "@/router";
 
@@ -132,9 +140,32 @@ export default {
       units: "",
       image: "",
       value: null,
+      valid: false,
+      recipeNameRules: [
+        (value) => !!value || "Pole wymagane.",
+        (value) =>
+          (value && value.length >= 4) ||
+          "Nazwa przepisu musi się składać z przynajmniej 4 znaków",
+      ],
+      ingredientRules: [
+        (value) => !!value || "Pole wymagane.",
+        (value) =>
+          (value && value.length >= 4) ||
+          "Nazwa składnika musi się składać z przynajmniej 4 znaków",
+      ],
+      stepRules: [
+        (value) => !!value || "Pole wymagane.",
+        (value) =>
+          (value && value.length >= 10) ||
+          "Opis kroku musi się składać z przynajmniej 10 znaków",
+      ],
+      requiredRule: [(value) => !!value || "Pole wymagane."],
     };
   },
   methods: {
+    validation() {
+      this.$refs.form.validate();
+    },
     addIngredient() {
       this.ingredients.push({
         id: this.index,
@@ -186,24 +217,27 @@ export default {
       reader.readAsDataURL(file);
     },
     sendRecipe() {
-      axios
-        .post(process.env.VUE_APP_API_BASEURL + "recipes/addRecipe", {
-          token: this.$store.state.token,
-          name: this.recipeName,
-          steps: this.stepModels,
-          ingredients: this.ingredientModels,
-          categories: this.categoryModels,
-          image: this.image,
-        })
-        .then((res) => {
-          router.push({
-            name: "SingleRecipe",
-            params: { id: res.data.recipeId },
+      this.validation();
+      if (this.valid) {
+        axios
+          .post(process.env.VUE_APP_API_BASEURL + "recipes/addRecipe", {
+            token: this.$store.state.token,
+            name: this.recipeName,
+            steps: this.stepModels,
+            ingredients: this.ingredientModels,
+            categories: this.categoryModels,
+            image: this.image,
+          })
+          .then((res) => {
+            router.push({
+              name: "SingleRecipe",
+              params: { id: res.data.recipeId },
+            });
+          })
+          .catch((error) => {
+            console.log(error);
           });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      }
     },
   },
   mounted() {

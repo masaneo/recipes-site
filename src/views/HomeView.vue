@@ -112,6 +112,19 @@ export default {
           this.recipes = response.data;
           this.links = response.data.links;
           this.curPage = 1;
+          if (response.data.total === 0) {
+            this.getNewestRecipes();
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    async getNewestRecipes() {
+      await axios
+        .get(process.env.VUE_APP_API_BASEURL + "recipes/getNewestRecipes")
+        .then((response) => {
+          this.newRecipes = response.data;
         })
         .catch((error) => {
           console.log(error);
@@ -127,15 +140,6 @@ export default {
     } else if (this.isSearching) {
       this.getRecipesSearch(router.currentRoute.value.query.search);
     }
-    axios
-      .get(process.env.VUE_APP_API_BASEURL + "recipes/getNewestRecipes")
-      .then((response) => {
-        console.log(response);
-        this.newRecipes = response.data;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   },
   watch: {
     async $route() {
