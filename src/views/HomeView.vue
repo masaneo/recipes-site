@@ -18,7 +18,7 @@
       />
       <div class="recipes-not-found" v-if="recipes.total === 0">
         <div class="details">Nie znaleziono żadnych przepisów</div>
-        <div class="latest-container">
+        <div class="latest-container" v-if="isSearching">
           <div class="latest-recipes-header">
             Może zainteresuje Cie jeden z najnowszych przepisów
           </div>

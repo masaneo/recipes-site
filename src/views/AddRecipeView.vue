@@ -101,12 +101,7 @@
           </v-btn>
         </div>
       </div>
-      <v-btn
-        color="success"
-        v-if="stage >= 5"
-        type="submit"
-        @click="sendRecipe"
-      >
+      <v-btn color="success" v-if="stage >= 5" @click="sendRecipe">
         Dodaj przepis
       </v-btn>
     </v-form>

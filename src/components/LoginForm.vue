@@ -17,7 +17,7 @@
         :rules="emailRules"
       ></v-text-field>
       <v-text-field
-        label="Password"
+        label="Hasło"
         type="password"
         name="password"
         v-model="password"
