@@ -119,6 +119,9 @@ export default {
 @import "@/assets/styles/recipe-box.sass";
 .recipe-name {
   font-size: 1vw;
+  @media (max-width: 1500px) {
+    font-size: 1.4vw;
+  }
   @media (max-width: 500px) {
     font-size: 4vw;
   }
